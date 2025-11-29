@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="62.45" height="63.677" viewBox="0 0 62.45 63.677">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rechteck_63" data-name="Rechteck 63" width="62.45" height="63.678" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="Print" transform="translate(0 0)">
+    <g id="Gruppe_32" data-name="Gruppe 32" transform="translate(0 0)" clip-path="url(#clip-path)">
+      <path id="Pfad_95" data-name="Pfad 95" d="M60.609,16.532H55.067V9.49H52.013V21.669H10.436V9.49H7.382v7.042H1.839A1.84,1.84,0,0,0,0,18.372V48.393a1.839,1.839,0,0,0,1.839,1.839h8.6V44.345H52.013v5.888h8.6a1.84,1.84,0,0,0,1.84-1.839V18.372a1.84,1.84,0,0,0-1.84-1.84" transform="translate(0 -1.008)" fill="#fff"/>
+      <rect id="Rechteck_62" data-name="Rechteck 62" width="39.066" height="19.119" transform="translate(11.691 0.001)" fill="#fff"/>
+      <path id="Pfad_96" data-name="Pfad 96" d="M13.082,68.977H52.148V49.86H13.082Zm3.449-14.432H48.7V56.17H16.531Zm0,4.061H48.7v1.625H16.531Zm0,4.141H48.7v1.626H16.531Z" transform="translate(-1.391 -5.299)" fill="#fff"/>
+    </g>
+  </g>
+</svg>

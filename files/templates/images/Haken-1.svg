@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="59.009" height="55.4" viewBox="0 0 59.009 55.4">
+  <g id="Haken" transform="translate(-140 -1613.6)">
+    <g id="Ellipse_4" data-name="Ellipse 4" transform="translate(140 1619)" fill="#fff" stroke="#0d86d1" stroke-width="3">
+      <circle cx="25" cy="25" r="25" stroke="none"/>
+      <circle cx="25" cy="25" r="23.5" fill="none"/>
+    </g>
+    <path id="Pfad_23" data-name="Pfad 23" d="M160.782,1642.587l10.323,8.888a85.1,85.1,0,0,1,25.558-28.53" transform="translate(-6 -1)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+    <path id="Pfad_22" data-name="Pfad 22" d="M160.782,1642.587l10.323,8.888a85.1,85.1,0,0,1,25.558-28.53" transform="translate(-6 -1)" fill="none" stroke="#0d86d1" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+  </g>
+</svg>

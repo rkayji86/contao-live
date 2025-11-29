@@ -1,0 +1,3 @@
+<?php //Contao%255CInstallationBundle%255CController%255CInstallationController%2523getContainerParameter
+
+return [PHP_INT_MAX, []];

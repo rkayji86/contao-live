@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="78.12" height="59.68" viewBox="0 0 78.12 59.68">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rechteck_56" data-name="Rechteck 56" width="78.12" height="59.68" fill="#fff"/>
+    </clipPath>
+  </defs>
+  <g id="Dashboard" transform="translate(0 0)">
+    <rect id="Rechteck_50" data-name="Rechteck 50" width="12.561" height="12.855" transform="translate(16.697 9.565)" fill="#fff"/>
+    <rect id="Rechteck_51" data-name="Rechteck 51" width="12.561" height="12.855" transform="translate(32.511 9.565)" fill="#fff"/>
+    <rect id="Rechteck_52" data-name="Rechteck 52" width="12.561" height="12.855" transform="translate(16.697 24.334)" fill="#fff"/>
+    <rect id="Rechteck_53" data-name="Rechteck 53" width="12.561" height="12.855" transform="translate(32.511 24.334)" fill="#fff"/>
+    <rect id="Rechteck_54" data-name="Rechteck 54" width="12.561" height="12.855" transform="translate(48.912 9.565)" fill="#fff"/>
+    <rect id="Rechteck_55" data-name="Rechteck 55" width="12.561" height="12.855" transform="translate(48.912 24.334)" fill="#fff"/>
+    <g id="Gruppe_25" data-name="Gruppe 25" transform="translate(0 0)">
+      <g id="Gruppe_24" data-name="Gruppe 24" clip-path="url(#clip-path)">
+        <path id="Pfad_68" data-name="Pfad 68" d="M4.1,59.681h69.92a4.095,4.095,0,0,0,1.713-7.817l-5.964-5.286a4.833,4.833,0,0,0,4.329-4.8V4.857A4.854,4.854,0,0,0,69.244,0H8.874A4.854,4.854,0,0,0,4.022,4.857V41.776A4.838,4.838,0,0,0,8.549,46.6L2.406,51.855A4.105,4.105,0,0,0,.673,53.337l-.054.045H.647a4.089,4.089,0,0,0,3.452,6.3m1.6-2.755a.808.808,0,1,1,.811-.807.8.8,0,0,1-.811.807m3.218,0a.808.808,0,1,1,.809-.807.807.807,0,0,1-.809.807m3.438,0a.808.808,0,1,1,.81-.807.8.8,0,0,1-.81.807m29.607,0H35.13a.808.808,0,0,1,0-1.616h6.83a.808.808,0,1,1,0,1.616m-2.9-54.053a.891.891,0,1,1-.882.887.888.888,0,0,1,.882-.887M8.433,7.243H69.682V39.389H8.433ZM9.956,47.357h1.563L7.03,51.1H71.089l-4.334-3.747H68.4l5.113,4.535H4.659Z" transform="translate(0 0)" fill="#fff"/>
+      </g>
+    </g>
+  </g>
+</svg>

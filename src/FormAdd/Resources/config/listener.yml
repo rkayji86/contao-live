@@ -1,0 +1,8 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  FormAdd\EventListener\FormSendViaEmailExtended:
+    tags:
+      - { name: contao.hook, hook: processFormData, method: prepareFormData }

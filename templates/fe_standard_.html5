@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="<?= $this->language ?>" <?php if ($this->isRTL) : ?> dir="rtl" <?php endif; ?>>
+
+<head>
+    <script>
+        var _paq = window._paq = window._paq || [];
+        /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        (function() {
+            var u = "https://digi.digiwerft.de/";
+            _paq.push(['setTrackerUrl', u + 'matomo.php']);
+            _paq.push(['setSiteId', '3']);
+            var d = document,
+                g = d.createElement('script'),
+                s = d.getElementsByTagName('script')[0];
+            g.async = true;
+            g.src = u + 'matomo.js';
+            s.parentNode.insertBefore(g, s);
+        })();
+    </script>
+    <?php $this->block('head'); ?>
+    <meta charset="<?= $this->charset ?>">
+    <title><?= $this->pageTitle ?></title>
+    <base href="<?= $this->base ?>">
+    <?php $this->block('meta'); ?>
+    <meta name="robots" content="<?= $this->robots ?>">
+    <meta name="description" content="<?= $this->description ?>">
+    <meta name="keywords" content="<?= $this->keywords ?>">
+    <link rel="canonical" href="<?= $this->canonical ?>">
+    <?php $this->endblock(); ?>
+    <?= $this->viewport ?>
+    <?= $this->framework ?>
+    <?= $this->stylesheets ?>
+    <?= $this->mooScripts ?>
+    <?= $this->head ?>
+    <link rel="icon" href="/favicon.ico" type="image/vnd.microsoft.icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/vnd.microsoft.icon">
+    <?php $this->block('html5shiv'); ?>
+    <!--[if lt IE 9]><script src="<?= TL_ASSETS_URL ?>assets/html5shiv/<?= $GLOBALS['TL_ASSETS']['HTML5SHIV'] ?>/html5shiv-printshiv.min.js"></script><![endif]-->
+    <?php $this->endblock(); ?>
+    <?php $this->endblock(); ?>
+    <?php echo $GLOBALS['TL_CONFIG']['headscripts']; ?>
+</head>
+
+<body id="top" class="<?php if ($this->class) echo ' ' . $this->class; ?>" <?php if ($this->onload) : ?>
+    onload="<?= $this->onload ?>" <?php endif; ?> itemscope itemtype="http://schema.org/WebPage">
+    <?php echo $GLOBALS['TL_CONFIG']['bodyscripts']; ?>
+    <div class="wrapper">
+        {{insert_module::1}}
+        <?= $this->main ?>
+        {{insert_module::2}}
+    </div>
+    <?= $this->mootools ?>
+    <?php echo $GLOBALS['TL_CONFIG']['footerscripts']; ?>
+</body>
+
+</html>

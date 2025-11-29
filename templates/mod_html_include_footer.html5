@@ -1,0 +1,16 @@
+<?php
+global $objPage;
+?>
+<div class="footer-top">
+    <a class="logo" href="{{link_url::2}}"></a>
+    <span class="slogan">Das Gutscheinsystem für alle!</span>
+</div>
+<div class="footer-nav">
+    {{insert_module::4}}
+</div>
+<?php if (true) : ?>
+    <div class="footer-social">
+        <a class="facebook" href="https://www.facebook.com/digiwerft">facebook</a>
+        <a class="instagram" href="https://www.instagram.com/digiwerft/">instagram</a>
+    </div>
+<?php endif; ?>

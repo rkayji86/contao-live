@@ -1,0 +1,12 @@
+$ /opt/php-8.2/bin/php -q -dmax_execution_time=0 -dmemory_limit=-1 -ddisplay_errors=0 -ddisplay_startup_errors=0 -derror_reporting=0 -dallow_url_fopen=1 -ddisable_functions= -ddate.timezone=Europe/Berlin /var/www/clients/client1/web10/web/vendor/contao/manager-bundle/bin/contao-console cache:clear --env=prod --no-warmup
+
+
+# Process terminated with exit code 0
+# Result: OK
+
+
+$ /opt/php-8.2/bin/php -q -dmax_execution_time=0 -dmemory_limit=-1 -ddisplay_errors=0 -ddisplay_startup_errors=0 -derror_reporting=0 -dallow_url_fopen=1 -ddisable_functions= -ddate.timezone=Europe/Berlin /var/www/clients/client1/web10/web/vendor/contao/manager-bundle/bin/contao-console cache:warmup --env=prod
+
+
+# Process terminated with exit code 0
+# Result: OK

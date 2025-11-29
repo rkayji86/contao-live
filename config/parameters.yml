@@ -1,0 +1,7 @@
+# This file has been auto-generated during installation
+parameters:
+    database_host: db002936.mydbserver.com
+    database_port: 3306
+    database_user: p700936
+    database_password: 'wazmSpQa+Xa/6Ok#dK1Z'
+    database_name: usr_p700936_1

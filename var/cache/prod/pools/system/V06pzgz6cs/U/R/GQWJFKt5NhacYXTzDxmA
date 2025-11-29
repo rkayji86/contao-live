@@ -1,0 +1,28 @@
+<?php //Contao%255CInstallationBundle%255CController%255CInstallationController
+
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        clone (\Symfony\Component\VarExporter\Internal\Registry::$prototypes['Symfony\\Component\\Routing\\Annotation\\Route'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Symfony\\Component\\Routing\\Annotation\\Route')),
+    ],
+    null,
+    [
+        'Symfony\\Component\\Routing\\Annotation\\Route' => [
+            'path' => [
+                '%contao.backend.route_prefix%/install',
+            ],
+            'name' => [
+                'contao_install',
+            ],
+            'defaults' => [
+                [
+                    '_scope' => 'backend',
+                    '_store_referrer' => false,
+                ],
+            ],
+        ],
+    ],
+    [
+        $o[0],
+    ],
+    []
+); }];

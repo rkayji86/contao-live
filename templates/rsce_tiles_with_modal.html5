@@ -1,0 +1,80 @@
+<!-- rsce_tiles_with_modal.html5 -->
+
+<div class="<?= $this->class ? $this->class : '' ?> tiles-modal-list"
+    <?= $this->cssID ? ' id="' . $this->cssID[0] . '"' : '' ?>>
+    <?php if ($this->headline): ?>
+    <<?= $this->hl ?: 'h2' ?>><?= $this->headline ?></<?= $this->hl ?: 'h2' ?>>
+    <?php endif; ?>
+
+    <div class="tile-row">
+        <?php foreach ($this->tiles as $i => $tile): ?>
+        <?php if ($i > 0 && $i % 4 == 0): ?>
+    </div>
+    <div class="tile-row">
+        <?php endif; ?>
+
+        <div class="tile">
+            <?php if ($tile->logo): ?>
+            <div class="tile-logo">
+                {{picture::<?= $tile->logo ?>?alt=Logo}}
+            </div>
+            <?php endif; ?>
+
+            <div class="tile-content">
+                <h3><?= $tile->headline ?></h3>
+                <div class="tile-teaser"><?= $tile->teaser ?></div>
+            </div>
+            <?php if ($tile->link == ''): ?>
+            <button class="tile-modal-btn btn"
+                data-modal="tile-modal-<?= $i ?>"><?= $tile->linkTitle ?: 'Mehr erfahren' ?></button>
+            <?php else: ?>
+            <a href="<?= $tile->link ?>" class="tile-link btn" target="<?= $tile->target ? '_blank' : '_self' ?>"><?= $tile->linkTitle ?: 'Mehr
+                erfahren' ?></a>
+            <?php endif; ?>
+        </div>
+        <?php endforeach; ?>
+    </div>
+
+    <?php foreach ($this->tiles as $i => $tile): ?>
+    <div id="tile-modal-<?= $i ?>" class="tile-modal" style="display:none;">
+        <div class="tile-modal-overlay"></div>
+        <div class="tile-modal-content">
+            <button class="tile-modal-close" data-modal-close="tile-modal-<?= $i ?>">&times;</button>
+            <h3><?= $tile->headline ?></h3>
+            <div><?= $tile->longtext ?></div>
+        </div>
+    </div>
+    <?php endforeach; ?>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.tile-modal-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            var modal = document.getElementById(this.getAttribute('data-modal'));
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        });
+    });
+    document.querySelectorAll('.tile-modal-close').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            var modal = document.getElementById(this.getAttribute('data-modal-close'));
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        });
+    });
+    document.querySelectorAll('.tile-modal-overlay').forEach(function(overlay) {
+        overlay.addEventListener('click', function(e) {
+            var modal = this.parentElement;
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        });
+    });
+});
+</script>

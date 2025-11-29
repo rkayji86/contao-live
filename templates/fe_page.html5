@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="<?= $this->language ?>" <?php if ($this->isRTL) : ?> dir="rtl" <?php endif; ?>>
+
+<head>
+
+    <script>
+    var _paq = window._paq = window._paq || [];
+    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function() {
+        var u = "https://digi.digiwerft.de/";
+        _paq.push(['setTrackerUrl', u + 'matomo.php']);
+        _paq.push(['setSiteId', '3']);
+        var d = document,
+            g = d.createElement('script'),
+            s = d.getElementsByTagName('script')[0];
+        g.async = true;
+        g.src = u + 'matomo.js';
+        s.parentNode.insertBefore(g, s);
+    })();
+    </script>
+    <!-- Google Tag Manager -->
+    <script>
+    (function(w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({
+            'gtm.start': new Date().getTime(),
+            event: 'gtm.js'
+        });
+        var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s),
+            dl = l != 'dataLayer' ? '&l=' + l : '';
+        j.async = true;
+        j.src =
+            'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+        f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', 'GTM-T6MLBBS9');
+    </script>
+    <!-- End Google Tag Manager -->
+    <?php $this->block('head'); ?>
+    <meta charset="<?= $this->charset ?>">
+    <title><?= $this->title ?></title>
+    <base href="<?= $this->base ?>">
+    <link rel="apple-touch-icon" sizes="144x144" href="/files/templates/favicon/apple-icon-144x144.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/files/templates/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/files/templates/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/files/templates/favicon/manifest.json">
+    <link rel="mask-icon" href="/files/templates/favicon/apple-icon-180x180.png" color="#ffffff">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+    <?php $this->block('meta'); ?>
+    <meta name="robots" content="<?= $this->robots ?>">
+    <meta name="description" content="<?= Contao\StringUtil::substr($this->description, 320) ?>">
+    <?php $this->endblock(); ?>
+
+    <?php if ($this->canonical) : ?>
+    <link rel="canonical" href="<?= $this->canonical ?>">
+    <?php endif; ?>
+
+    <?= $this->viewport ?>
+    <?= $this->framework ?>
+    <?= $this->stylesheets ?>
+    <?= $this->mooScripts ?>
+    <?= $this->head ?>
+    <?php $this->endblock(); ?>
+    <?= $GLOBALS['TL_CONFIG']['headscripts']; ?>
+
+</head>
+
+<body id="top" <?php if ($this->class) : ?> class="<?= $this->class ?>" <?php endif; ?><?php if ($this->onload) : ?>
+    onload="<?= $this->onload ?>" <?php endif; ?>>
+    <?= $GLOBALS['TL_CONFIG']['bodyscripts']; ?>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T6MLBBS9" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <?php $this->block('body'); ?>
+    <?php $this->sections('top'); ?>
+
+    <div id="wrapper">
+
+        <?php $this->block('header'); ?>
+        <?php if ($this->header) : ?>
+        <header id="header">
+            <div class="inside">
+                <?= $this->header ?>
+            </div>
+        </header>
+        <?php endif; ?>
+        <?php $this->endblock(); ?>
+
+        <?php $this->sections('before'); ?>
+
+        <?php $this->block('container'); ?>
+        <div id="container">
+
+            <?php $this->block('main'); ?>
+            <main id="main">
+                <div class="inside">
+                    <?= $this->main ?>
+                </div>
+                <?php $this->sections('main'); ?>
+            </main>
+            <?php $this->endblock(); ?>
+
+            <?php $this->block('left'); ?>
+            <?php if ($this->left) : ?>
+            <aside id="left">
+                <div class="inside">
+                    <?= $this->left ?>
+                </div>
+            </aside>
+            <?php endif; ?>
+            <?php $this->endblock(); ?>
+
+            <?php $this->block('right'); ?>
+            <?php if ($this->right) : ?>
+            <aside id="right">
+                <div class="inside">
+                    <?= $this->right ?>
+                </div>
+            </aside>
+            <?php endif; ?>
+            <?php $this->endblock(); ?>
+
+        </div>
+        <?php $this->endblock(); ?>
+
+        <?php $this->sections('after'); ?>
+
+        <?php $this->block('footer'); ?>
+        <?php if ($this->footer) : ?>
+        <footer id="footer">
+            <div class="inside">
+                <?= $this->footer ?>
+            </div>
+        </footer>
+        <?php endif; ?>
+        <?php $this->endblock(); ?>
+        <div class="mmenu">
+            <div class="container">
+                <div class="mainmenu">
+                    {{insert_module::3}}
+                </div>
+                <div class="lastmenuline">
+                    <nav>
+                        <ul>
+                            <li><a href="{{link_url::7}}">Datenschutz</a></li>
+                            <li><a href="{{link_url::3}}">Impressum</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <?php $this->sections('bottom'); ?>
+    <?php $this->endblock(); ?>
+
+    <?= $this->mootools ?>
+    <?= $this->jsonLdScripts ?>
+    <?= $GLOBALS['TL_CONFIG']['footerscripts']; ?>
+</body>
+
+</html>

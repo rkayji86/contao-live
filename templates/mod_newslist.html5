@@ -1,0 +1,13 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+<div class="container">
+    <?php if (empty($this->articles)): ?>
+    <p class="empty"><?= $this->empty ?></p>
+    <?php else: ?>
+    <?= implode('', $this->articles) ?>
+    <?= $this->pagination ?>
+    <?php endif; ?>
+    <p class="mt-2 button-container"><a class="button" href="{{link_url::36}}">Alle News</a></p>
+</div>
+<?php $this->endblock(); ?>

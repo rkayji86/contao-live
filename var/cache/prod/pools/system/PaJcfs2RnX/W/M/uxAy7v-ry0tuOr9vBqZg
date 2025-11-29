@@ -1,0 +1,163 @@
+<?php //Contao__CoreBundle__Entity__RememberMe__CLASSMETADATA__
+
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        clone (($p = &\Symfony\Component\VarExporter\Internal\Registry::$prototypes)['Doctrine\\ORM\\Mapping\\ClassMetadata'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Mapping\\ClassMetadata')),
+        clone ($p['Doctrine\\ORM\\Id\\IdentityGenerator'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Id\\IdentityGenerator')),
+    ],
+    null,
+    [
+        'stdClass' => [
+            'name' => [
+                'Contao\\CoreBundle\\Entity\\RememberMe',
+            ],
+            'namespace' => [
+                'Contao\\CoreBundle\\Entity',
+            ],
+            'rootEntityName' => [
+                'Contao\\CoreBundle\\Entity\\RememberMe',
+            ],
+            'customRepositoryClassName' => [
+                'Contao\\CoreBundle\\Repository\\RememberMeRepository',
+            ],
+            'identifier' => [
+                [
+                    'id',
+                ],
+            ],
+            'generatorType' => [
+                4,
+            ],
+            'fieldMappings' => [
+                [
+                    'id' => [
+                        'fieldName' => 'id',
+                        'type' => 'integer',
+                        'scale' => null,
+                        'length' => null,
+                        'unique' => false,
+                        'nullable' => false,
+                        'precision' => null,
+                        'options' => [
+                            'unsigned' => true,
+                        ],
+                        'id' => true,
+                        'columnName' => 'id',
+                    ],
+                    'series' => [
+                        'fieldName' => 'series',
+                        'type' => 'binary_string',
+                        'scale' => null,
+                        'length' => 32,
+                        'unique' => false,
+                        'nullable' => false,
+                        'precision' => null,
+                        'options' => [
+                            'fixed' => true,
+                        ],
+                        'columnName' => 'series',
+                    ],
+                    'value' => [
+                        'fieldName' => 'value',
+                        'type' => 'binary_string',
+                        'scale' => null,
+                        'length' => 64,
+                        'unique' => false,
+                        'nullable' => false,
+                        'precision' => null,
+                        'options' => [
+                            'fixed' => true,
+                        ],
+                        'columnName' => 'value',
+                    ],
+                    'lastUsed' => [
+                        'fieldName' => 'lastUsed',
+                        'type' => 'datetime',
+                        'scale' => null,
+                        'length' => null,
+                        'unique' => false,
+                        'nullable' => false,
+                        'precision' => null,
+                        'columnName' => 'lastUsed',
+                    ],
+                    'expires' => [
+                        'fieldName' => 'expires',
+                        'type' => 'datetime',
+                        'scale' => null,
+                        'length' => null,
+                        'unique' => false,
+                        'nullable' => true,
+                        'precision' => null,
+                        'columnName' => 'expires',
+                    ],
+                    'class' => [
+                        'fieldName' => 'class',
+                        'type' => 'string',
+                        'scale' => null,
+                        'length' => 100,
+                        'unique' => false,
+                        'nullable' => false,
+                        'precision' => null,
+                        'columnName' => 'class',
+                    ],
+                    'username' => [
+                        'fieldName' => 'username',
+                        'type' => 'string',
+                        'scale' => null,
+                        'length' => 200,
+                        'unique' => false,
+                        'nullable' => false,
+                        'precision' => null,
+                        'columnName' => 'username',
+                    ],
+                ],
+            ],
+            'fieldNames' => [
+                [
+                    'id' => 'id',
+                    'series' => 'series',
+                    'value' => 'value',
+                    'lastUsed' => 'lastUsed',
+                    'expires' => 'expires',
+                    'class' => 'class',
+                    'username' => 'username',
+                ],
+            ],
+            'columnNames' => [
+                [
+                    'id' => 'id',
+                    'series' => 'series',
+                    'value' => 'value',
+                    'lastUsed' => 'lastUsed',
+                    'expires' => 'expires',
+                    'class' => 'class',
+                    'username' => 'username',
+                ],
+            ],
+            'table' => [
+                [
+                    'name' => 'tl_remember_me',
+                    'indexes' => [
+                        'series' => [
+                            'columns' => [
+                                'series',
+                            ],
+                        ],
+                    ],
+                    'uniqueConstraints' => [
+                        'value' => [
+                            'columns' => [
+                                'value',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'idGenerator' => [
+                $o[1],
+            ],
+        ],
+    ],
+    $o[0],
+    []
+); }];

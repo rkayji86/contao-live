@@ -1,0 +1,309 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Integration Guide: GutscheinWerft Voucher System with Booking Experts</title>
+  <style>
+    /* Global Styles */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 40px 60px;
+      color: #333333;
+      background: #ffffff;
+    }
+    h1, h2, h3 {
+      color: #2A4D69;
+      margin-top: 1.2em;
+      margin-bottom: 0.4em;
+      font-weight: 700;
+    }
+    h1 { font-size: 32px; text-align: center; }
+    h2 { font-size: 22px; border-bottom: 2px solid #4A90E2; padding-bottom: 6px; }
+    h3 { font-size: 16px; }
+
+    p, li {
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0.7em 0;
+    }
+    ol, ul {
+      margin-left: 1.2em;
+    }
+
+    /* Title Page */
+    .title-page {
+      display: flex;
+      flex-direction: column;
+      min-height: 60vh;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      page-break-after: always;
+    }
+    .logo-placeholder {
+      width: 100%;
+      max-width: 400px;
+      height: 100px;
+      margin-bottom: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #4A90E2;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+
+    /* Table of Contents */
+    .toc {
+      page-break-after: always;
+    }
+    .toc h2 {
+      margin-bottom: 0.5em;
+    }
+    .toc ul {
+      list-style: none;
+      padding-left: 0;
+      font-size: 14px;
+    }
+    .toc li {
+      margin-bottom: 0.4em;
+    }
+    .toc a {
+      text-decoration: none;
+      color: #3478BF;
+    }
+    .toc a:hover {
+      text-decoration: underline;
+    }
+
+    /* Section */
+    section {
+      page-break-inside: avoid;
+      margin-bottom: 50px;
+    }
+
+    /* Section Divider */
+    .section-divider {
+      margin: 60px 0 40px 0;
+      padding: 20px 0;
+      border-top: 3px solid #4A90E2;
+      border-bottom: 1px solid #D0E6F1;
+      text-align: center;
+      background: linear-gradient(90deg, #F5F9FC 0%, #E8F4FD 50%, #F5F9FC 100%);
+    }
+    .section-divider h1 {
+      color: #2A4D69;
+      font-size: 28px;
+      margin: 0;
+      font-weight: 600;
+    }
+    .section-divider p {
+      color: #666666;
+      font-style: italic;
+      margin: 8px 0 0 0;
+    }
+
+    /* Screenshot Placeholder */
+    .screenshot-placeholder {
+      width: 100%;
+      max-width: 600px;
+      height: 320px;
+      border: 2px dashed #D0E6F1;
+      background-color: #F5F9FC;
+      color: #7A9CC6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-style: italic;
+      font-size: 13px;
+      margin: 12px 0 18px 0;
+      user-select: none;
+    }
+
+    img {
+      width: 100%;
+      max-width: 800px;
+      object-fit: contain;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Title Page -->
+  <div class="title-page">
+    <div class="logo-placeholder"><img src="images/logo.png" alt="Gutscheinwerft Logo" /></div>
+    <h1>Integration Guide<br/>GutscheinWerft Voucher System with Booking Experts</h1>
+    <p style="margin-top: 40px; font-size: 14px; color: #555555;">
+      Last updated: September 9, 2025
+    </p>
+  </div>
+
+  <!-- Table of Contents -->
+  <div class="toc">
+    <h2>Table of Contents</h2>
+    <ul>
+      <li><strong>GutscheinWerft Configuration</strong></li>
+      <li><a href="#step1">Step 1: Account Registration with GutscheinWerft</a></li>
+      <li><a href="#step2">Step 2: Webhook Setup in GutscheinWerft Backend</a></li>
+      <li><a href="#step3">Step 3: Adding a New Webhook</a></li>
+      <li><a href="#step4">Step 4: Selecting the Webhook Trigger</a></li>
+      <li><a href="#step5">Step 5: Selecting the Target System</a></li>
+      <li><a href="#step6">Step 6: Saving the Webhook Configuration</a></li>
+      <li style="margin-top: 15px;"><strong>BookingExperts Configuration</strong></li>
+      <li><a href="#step7">Step 7: Accessing the App Store</a></li>
+      <li><a href="#step8">Step 8: Searching for GutscheinWERFT</a></li>
+      <li><a href="#step9">Step 9: Installing the GutscheinWERFT App</a></li>
+      <li><a href="#step10">Step 10: Review Permissions and Install</a></li>
+      <li><a href="#step11">Step 11: Enter GutscheinWERFT Credentials</a></li>
+      <li><a href="#step12">Step 12: Submit Credentials</a></li>
+      <li><a href="#step13">Step 13: Confirm Connection</a></li>
+      <li><a href="#step14">Step 14: Return to the App Store</a></li>
+      <li><a href="#step15">Step 15: Verify Installation</a></li>
+       <li style="margin-top: 15px;"><a href="#conclusion"><strong>Integration Complete</strong></a></li>
+    </ul>
+  </div>
+
+  <!-- GutscheinWerft Section -->
+  <section id="step1">
+    <h2>Step 1: Account Registration with GutscheinWerft</h2>
+    <p>Before integrating vouchers into Booking Experts, each user needs a valid account with GutscheinWerft. Currently, the registration is handled manually.</p>
+    <h3>How to Register:</h3>
+    <ol>
+      <li><strong>Contact GutscheinWerft:</strong> Reach out via email or the official contact form to request an account.</li>
+      <li><strong>Await Confirmation:</strong> The GutscheinWerft team will process your request and create an account.</li>
+      <li><strong>Receive Login Details:</strong> You will receive an email with your credentials and further instructions.</li>
+    </ol>
+    <p><strong>Note:</strong> A self-registration process is currently under development. In the future, users will be able to sign up directly on the GutscheinWerft website.</p>
+  </section>
+
+  <section id="step2">
+    <h2>Step 2: Webhook Setup in GutscheinWerft Backend</h2>
+    <p>After receiving their account, the user logs into the GutscheinWerft backend, navigates to <strong>Settings &gt; Webhooks</strong>, and clicks <strong>"Webhook"</strong> to begin configuration.</p>
+    <div class="image-container">
+      <img src="images/gw2.png" alt=""/>
+    </div>
+  </section>
+
+  <section id="step3">
+    <h2>Step 3: Adding a New Webhook</h2>
+    <p>Once you are in the webhook management section, you need to create a new webhook for your Booking Experts integration. Click on the <strong>"Neuen Webhook hinzufügen"</strong> button to start setting up a new webhook configuration.</p>
+    <div class="image-container">
+      <img src="images/gw3.png" alt=""/>
+    </div>
+  </section>
+
+  <section id="step4">
+    <h2>Step 4: Selecting the Webhook Trigger</h2>
+    <p>In the webhook configuration form, you need to specify when the webhook should be triggered. Look for the <strong>"Auslösen wenn"</strong> (Trigger when) section and select the appropriate trigger event that will activate the webhook for your Booking Experts integration.</p>
+    <div class="image-container">
+      <img src="images/gw5.png" alt=""/>
+    </div>
+  </section>
+
+  <section id="step5">
+    <h2>Step 5: Selecting the Target System</h2>
+    <p>In the webhook configuration form, proceed to the section labeled <strong>"Angebundenes System"</strong> (Connected System). Here, you must select <strong>"BookingExperts"</strong> as the system that should receive the webhook event. This ensures all voucher-related events are sent directly to your Booking Experts installation.</p>
+    <div class="image-container">
+      <img src="images/gw6.png" alt=""/>
+    </div>
+  </section>
+
+  <section id="step6">
+    <h2>Step 6: Saving the Webhook Configuration</h2>
+    <p>After completing all necessary fields—choosing the trigger event and selecting "BookingExperts" as the connected system—finalize your webhook setup. Click the <strong>"Speichern"</strong> (Save) button at the bottom of the configuration form. Your new webhook will now appear in the list and will be active for communicating with Booking Experts. You will need the "Shopnummer" and "Key" later for setting up BookingExperts Configuration.</p>
+    <div class="image-container">
+      <img src="images/gw7.png" alt=""/>
+    </div>
+  </section>
+
+  <!-- Section Divider -->
+  <div class="section-divider">
+    <h1>BookingExperts Configuration</h1>
+    <p>Configure your BookingExperts system to receive and process voucher data from GutscheinWerft</p>
+  </div>
+
+  <!-- BookingExperts Section -->
+  <section id="step7">
+    <h2>Step 7: Accessing the App Store</h2>
+    <p>To begin, log in to your BookingExperts system and navigate to the App Store.</p>
+    <div class="image-container">
+      <img src="images/be1.png" alt=""/>
+    </div>
+  </section>
+
+  <section id="step8">
+    <h2>Step 8: Searching for GutscheinWERFT</h2>
+    <p>Use the search bar at the top to search for 'GutscheinWERFT'.</p>
+    <div class="image-container">
+      <img src="images/be2.png" alt=""/>
+    </div>
+  </section>
+
+  <section id="step9">
+    <h2>Step 9: Installing the GutscheinWERFT App</h2>
+    <p>Click on the 'GutscheinWERFT' app from the search results, then click the 'Install' button on its details page.</p>
+    <div class="image-container">
+      <img src="images/be3.png" alt=""/>
+    </div>
+  </section>
+
+  <section id="step10">
+    <h2>Step 10: Review Permissions and Install</h2>
+    <p>Review the required permissions, select the correct administration at the bottom of the page, and click 'Install' again.</p>
+    <div class="image-container">
+      <img src="images/be4.png" alt=""/>
+    </div>
+  </section>
+
+  <section id="step11">
+    <h2>Step 11: Enter GutscheinWERFT Credentials</h2>
+    <p>A new page will open. Enter the credentials from the webhook you created in the GutscheinWerft backend. You can find them again by clicking on the webhook in GutscheinWerft.</p>
+    <div class="image-container">
+      <img src="images/be5.png" alt=""/>
+    </div>
+  </section>
+
+  <section id="step12">
+    <h2>Step 12: Submit Credentials</h2>
+    <p>After entering the credentials, click the 'Submit' button to save and verify the connection.</p>
+    <div class="image-container">
+      <img src="images/be6.png" alt=""/>
+    </div>
+  </section>
+
+  <section id="step13">
+    <h2>Step 13: Confirm Connection</h2>
+    <p>A success page will confirm the connection. Click 'Back to BookingExperts' to return to your dashboard.</p>
+    <div class="image-container">
+      <img src="images/be7.png" alt=""/>
+    </div>
+  </section>
+
+  <section id="step14">
+    <h2>Step 14: Return to the App Store</h2>
+    <p>You are now back at the BookingExperts Dashboard. Click again on 'AppStore' to view your installed apps.</p>
+    <div class="image-container">
+      <img src="images/be8.png" alt=""/>
+    </div>
+  </section>
+
+  <section id="step15">
+    <h2>Step 15: Verify Installation</h2>
+    <p>Verify the installation by confirming that 'GutscheinWERFT' now appears at the top of your installed apps list.</p>
+    <div class="image-container">
+      <img src="images/be9.png" alt=""/>
+    </div>
+  </section>
+  
+  <!-- Conclusion -->
+  <section id="conclusion">
+    <h2>Integration Complete</h2>
+    <p>You have now successfully integrated GutscheinWERFT with your BookingExperts system. From this point forward, you can begin selling vouchers directly to your customers through your VoucherShop, and your guests can redeem them as a payment method during the online booking process.</p>
+  </section>
+
+</body>
+</html>

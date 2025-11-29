@@ -1,0 +1,19 @@
+<!-- rsce_tiles_with_modal.html5 -->
+
+<div class="<?= $this->class ? $this->class : '' ?> icon-with-text"
+    <?= $this->cssID ? ' id="' . $this->cssID[0] . '"' : '' ?>>
+    <div class="iconContainer">
+        {{picture::<?= $this->logo ?>?alt=Logo&size=_icon_with_text}}
+    </div>
+    <div class="textContainer">
+        <?php if ($this->headline): ?>
+        <<?= $this->hl ?: 'h2' ?>><?= $this->headline ?></<?= $this->hl ?: 'h2' ?>>
+        <?php endif; ?>
+        <?= $this->text ?>
+
+        <?php if ($this->link !== ''): ?>
+        <a href="<?= $this->link ?>" class="tile-link btn" target="<?= $this->target ? '_blank' : '_self' ?>"><?= $this->linkTitle ?: 'Mehr
+                erfahren' ?></a>
+        <?php endif; ?>
+    </div>
+</div>

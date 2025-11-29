@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60.778" height="70.439" viewBox="0 0 60.778 70.439">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rechteck_49" data-name="Rechteck 49" width="60.778" height="70.439" transform="translate(0 0)" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="Statistik" transform="translate(0 0)">
+    <rect id="Rechteck_45" data-name="Rechteck 45" width="16.15" height="36.995" transform="translate(41.105 28.012)" fill="#fff"/>
+    <rect id="Rechteck_46" data-name="Rechteck 46" width="16.15" height="26.425" transform="translate(22.167 38.582)" fill="#fff"/>
+    <rect id="Rechteck_47" data-name="Rechteck 47" width="16.149" height="17.617" transform="translate(3.229 47.39)" fill="#fff"/>
+    <g id="Gruppe_22" data-name="Gruppe 22">
+      <g id="Gruppe_21" data-name="Gruppe 21" clip-path="url(#clip-path)">
+        <path id="Pfad_67" data-name="Pfad 67" d="M38.415,5.788,43.6,8.321C32.441,34.78,3.652,32.478,3.652,32.478,31.624,38.569,42.6,24,49.553,12.192l5.083,3.051L52.059,0Z" fill="#fff"/>
+        <rect id="Rechteck_48" data-name="Rechteck 48" width="60.778" height="2.937" transform="translate(0 67.502)" fill="#fff"/>
+      </g>
+    </g>
+  </g>
+</svg>
