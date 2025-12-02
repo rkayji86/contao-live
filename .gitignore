@@ -2,3 +2,5 @@ vendor
 .env
 .env.local
 .vscode
+var/logs/
+var/cache/

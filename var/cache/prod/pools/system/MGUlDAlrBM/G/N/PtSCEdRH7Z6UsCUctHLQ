@@ -9,6 +9,10 @@ return [PHP_INT_MAX, [
         '/var/www/html/contao-live/templates/be_main.html5' => '@Contao_Global/be_main.html5',
         '/var/www/html/contao-live/vendor/contao/core-bundle/src/Resources/contao/templates/backend/be_main.html5' => '@Contao_ContaoCoreBundle/be_main.html5',
     ],
+    'be_navigation' => [
+        '/var/www/html/contao-live/templates/be_navigation.html5' => '@Contao_Global/be_navigation.html5',
+        '/var/www/html/contao-live/vendor/contao/core-bundle/src/Resources/contao/templates/backend/be_navigation.html5' => '@Contao_ContaoCoreBundle/be_navigation.html5',
+    ],
     'be_password' => [
         '/var/www/html/contao-live/templates/be_password.html5' => '@Contao_Global/be_password.html5',
         '/var/www/html/contao-live/vendor/contao/core-bundle/src/Resources/contao/templates/backend/be_password.html5' => '@Contao_ContaoCoreBundle/be_password.html5',
@@ -32,6 +36,10 @@ return [PHP_INT_MAX, [
     'image' => [
         '/var/www/html/contao-live/templates/image.html5' => '@Contao_Global/image.html5',
         '/var/www/html/contao-live/vendor/contao/core-bundle/src/Resources/contao/templates/image/image.html5' => '@Contao_ContaoCoreBundle/image.html5',
+    ],
+    'mod_faqadd' => [
+        '/var/www/html/contao-live/templates/mod_faqadd.html5' => '@Contao_Global/mod_faqadd.html5',
+        '/var/www/html/contao-live/src/FAQAdd/Resources/contao/templates/mod_faqadd.html5' => '@Contao_FAQAdd/mod_faqadd.html5',
     ],
     'mod_html_include_footer' => [
         '/var/www/html/contao-live/templates/mod_html_include_footer.html5' => '@Contao_Global/mod_html_include_footer.html5',
@@ -170,9 +178,6 @@ return [PHP_INT_MAX, [
     ],
     'be_maintenance' => [
         '/var/www/html/contao-live/vendor/contao/core-bundle/src/Resources/contao/templates/backend/be_maintenance.html5' => '@Contao_ContaoCoreBundle/be_maintenance.html5',
-    ],
-    'be_navigation' => [
-        '/var/www/html/contao-live/vendor/contao/core-bundle/src/Resources/contao/templates/backend/be_navigation.html5' => '@Contao_ContaoCoreBundle/be_navigation.html5',
     ],
     'be_pagination' => [
         '/var/www/html/contao-live/vendor/contao/core-bundle/src/Resources/contao/templates/backend/be_pagination.html5' => '@Contao_ContaoCoreBundle/be_pagination.html5',

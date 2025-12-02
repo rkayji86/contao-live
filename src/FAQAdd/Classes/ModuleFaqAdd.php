@@ -1,102 +1,85 @@
 <?php
 
 namespace FAQAdd\Classes;
-use Contao;
+
+use Contao\BackendTemplate;
+use Contao\Environment;
+use Notion\Notion;
 
 class ModuleFaqAdd extends \Contao\ModuleFaqList
 {
+    protected $strTemplate = 'mod_faqadd';
 
-	protected $strTemplate = 'mod_faqadd';
+    public function generate()
+    {
+        if (TL_MODE === 'BE') {
+            $objTemplate = new BackendTemplate('be_wildcard');
+            $objTemplate->wildcard = '### FAQ ADD (Notion Integrated) ###';
+            $objTemplate->title    = $this->headline;
+            $objTemplate->id       = $this->id;
+            $objTemplate->link     = $this->name;
+            $objTemplate->href     = Environment::get('request');
+            return $objTemplate->parse();
+        }
 
-	public function generate()
-	{
+        return parent::generate();
+    }
 
-		if (TL_MODE == 'BE')
-		{
-			/** @var BackendTemplate|object $objTemplate */
-			$objTemplate = new \BackendTemplate('be_wildcard');
+    protected function compile()
+    {
+        $token      = $_ENV['NOTION_TOKEN'] ?? null;
+        $databaseId = $_ENV['NOTION_FAQ_DATABASE'] ?? null;
+        $notionFaq  = [];
 
-			$objTemplate->wildcard = '### FAQ ###';
-			$objTemplate->title = $this->headline;
-			$objTemplate->id = $this->id;
-			$objTemplate->link = $this->name;
-			$objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
+        if ($token && $databaseId) {
+            try {
+                $notion   = Notion::create($token);
+                $database = $notion->databases()->find($databaseId);
+                // Query database — this returns array of Page objects
+                $pages    = $notion->databases()->queryAllPages($database);
 
-			return $objTemplate->parse();
-		}
+                foreach ($pages as $page) {
+                    $props = $page->properties;
 
-		$categories = \Contao\FaqCategoryModel::findAll();
-		$catarray = array();
-		if ($categories !== null)
-		{
-			while ($categories->next())
-			{
-				$catarray[] = $categories->id;
-			}
-		}
-		$this->faq_categories = $catarray;
+                    // Example: choose German if exists, else English
+                    $question = '';
+                    $answer   = '';
 
-		if (empty($this->faq_categories) || !\is_array($this->faq_categories))
-		{
-			return '';
-		}
+                    if (!empty($props['de_question']->text) && count($props['de_question']->text) > 0) {
+                        $question = $props['de_question']->text[0]->plainText;
+                    } elseif (!empty($props['en_question']->text) && count($props['en_question']->text) > 0) {
+                        $question = $props['en_question']->text[0]->plainText;
+                    }
 
-		if ($this->faq_readerModule > 0 && (isset($_GET['items']) || (\Config::get('useAutoItem') && isset($_GET['auto_item']))))
-		{
-			return $this->getFrontendModule($this->faq_readerModule, $this->strColumn);
-		}
+                    if (!empty($props['de_answer']->text) && count($props['de_answer']->text) > 0) {
+                        $answer = $props['de_answer']->text[0]->plainText;
+                    } elseif (!empty($props['en_answer']->text) && count($props['en_answer']->text) > 0) {
+                        $answer = $props['en_answer']->text[0]->plainText;
+                    }
 
-		return parent::generate();
-	}
+                    if ($question !== '' && $answer !== '') {
+                        $notionFaq[] = [
+                            'question' => $question,
+                            'answer'   => nl2br($answer),
+                            'class'    => ''
+                        ];
+                    }
+                }
+            } catch (\Throwable $e) {
+                $notionFaq[] = [
+                    'question' => 'Notion Error',
+                    'answer'   => $e->getMessage(),
+                    'class'    => 'error'
+                ];
+            }
+        }
 
-
-	protected function compile()
-	{
-
-		$objFaq = \FaqModel::findPublishedByPids($this->faq_categories);
-
-		if ($objFaq === null)
-		{
-			$this->Template->faq = array();
-
-			return;
-		}
-
-		$arrFaq = array_fill_keys($this->faq_categories, array());
-
-
-		while ($objFaq->next())
-		{
-			$arrTemp = $objFaq->row();
-			$arrTemp['title'] = \StringUtil::specialchars($objFaq->question, true);
-
-			$objPid = $objFaq->getRelated('pid');
-
-			$arrFaq[$objFaq->pid]['items'][] = $arrTemp;
-			$arrFaq[$objFaq->pid]['headline'] = $objPid->headline;
-			$arrFaq[$objFaq->pid]['title'] = $objPid->title;
-		}
-
-		$arrFaq = array_values(array_filter($arrFaq));
-
-		$cat_count = 0;
-		$cat_limit = \count($arrFaq);
-
-
-		foreach ($arrFaq as $k=>$v)
-		{
-			$count = 0;
-			$limit = \count($v['items']);
-
-			for ($i=0; $i<$limit; $i++)
-			{
-				$arrFaq[$k]['items'][$i]['class'] = trim(((++$count == 1) ? ' first' : '') . (($count >= $limit) ? ' last' : '') . ((($count % 2) == 0) ? ' odd' : ' even'));
-			}
-
-			$arrFaq[$k]['class'] = trim(((++$cat_count == 1) ? ' first' : '') . (($cat_count >= $cat_limit) ? ' last' : '') . ((($cat_count % 2) == 0) ? ' odd' : ' even'));
-		}
-
-		$this->Template->faq = $arrFaq;
-	}
-
+        $this->Template->faq = [
+            [
+                'title' => 'FAQ',
+                'items' => $notionFaq,
+                'class' => ''
+            ]
+        ];
+    }
 }
