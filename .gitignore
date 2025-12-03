@@ -3,4 +3,4 @@ vendor
 .env.local
 .vscode
 var/logs/
-var/cache/
+/var/cache/
