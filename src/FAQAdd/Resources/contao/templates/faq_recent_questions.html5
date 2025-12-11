@@ -1,0 +1,40 @@
+<!-- Recently Asked Questions -->
+<div class="recent-questions-section">
+    <div class="recent-questions-container">
+        <h2 class="section-title"><?= $this->recentQuestionsTitle ?: 'Recently Asked Questions' ?></h2>
+        <div class="accordion" id="faqAccordion">
+            <?php if ($this->recentQuestions): ?>
+                <?php foreach ($this->recentQuestions as $index => $question): ?>
+                <div class="accordion-item custom-accordion">
+                    <h2 class="accordion-header" id="q<?= $index + 1 ?>">
+                        <button class="accordion-button collapsed custom-accordion-btn" data-bs-toggle="collapse" data-bs-target="#answer<?= $index + 1 ?>">
+                            <?= htmlspecialchars($question['question']) ?>
+                        </button>
+                    </h2>
+                    <div id="answer<?= $index + 1 ?>" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            <?= $question['answer'] ?>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <!-- Default recent questions if no data provided -->
+                <?php for ($i = 1; $i <= 5; $i++): ?>
+                <div class="accordion-item custom-accordion">
+                    <h2 class="accordion-header" id="q<?= $i ?>">
+                        <button class="accordion-button collapsed custom-accordion-btn" data-bs-toggle="collapse" data-bs-target="#answer<?= $i ?>">
+                            Accordion header
+                        </button>
+                    </h2>
+                    <div id="answer<?= $i ?>" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Answer text here...
+                        </div>
+                    </div>
+                </div>
+                <?php endfor; ?>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>

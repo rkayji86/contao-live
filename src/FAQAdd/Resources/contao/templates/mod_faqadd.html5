@@ -1,29 +1,7 @@
-<div class="container content">
-    <div class="row">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 t-center">
-            <?php
-            foreach ($this->faq as $faqcat): ?>
-                <div class="faq">
-                <?php foreach ($faqcat['items'] as $item): ?>
-                <div class="togglesection">
-                    <h3 class="togglepoint"><?= $item['question'] ?></h3>
-
-                        <div class="togglecont" style="display:none;">
-                        <?= $item['answer'] ?>
-                    </div>
-                </div>
-                <?php endforeach; ?>
-            </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
+<div class="main-container">
+    <?= $this->heroSection ?>
+    <?= $this->clustersSection ?>
+    <?= $this->recentQuestionsSection ?>
+    <?= $this->internationalSection ?>
+    <?= $this->subClustersSection ?>
 </div>
-
-<script>
-document.querySelectorAll(".togglepoint").forEach(point => {
-    point.addEventListener("click", () => {
-        let panel = point.nextElementSibling;
-        panel.style.display = panel.style.display === "none" ? "block" : "none";
-    });
-});
-</script>

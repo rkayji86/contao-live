@@ -1,0 +1,35 @@
+<!-- Hero/Search Section -->
+<div class="hero-section mb-5">
+    <div class="search-container">
+        <h1 class="search-title"><?= $this->heroTitle ?: 'How can we help?' ?></h1>
+
+        <div class="search-box mb-3">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" placeholder="<?= $this->searchPlaceholder ?: 'Search for answers...' ?>" class="form-control">
+        </div>
+        
+        <?php if ($this->featuredItems): ?>
+        <div class="faq-items">
+            <?php foreach ($this->featuredItems as $item): ?>
+            <div class="faq-item">
+                <i class="fas fa-search faq-icon"></i>
+                <div class="faq-content">
+                    <div class="faq-question"><?= $item['question'] ?></div>
+                    <div class="faq-answer"><?= $item['answer'] ?></div>
+                </div>
+                <div class="faq-arrow">→</div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+        
+        <?php if ($this->popularTopics): ?>
+        <div class="popular-topics mb-5">
+            <span class="topics-title"><?= $this->topicsTitle ?: 'Popular Topics:' ?></span>
+            <?php foreach ($this->popularTopics as $topic): ?>
+            <button class="topic-btn"><?= $topic ?></button>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+    </div>
+</div>

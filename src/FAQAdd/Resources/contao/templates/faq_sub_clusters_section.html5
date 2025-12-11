@@ -1,0 +1,76 @@
+<!-- Sub Clusters Section -->
+<div class="sub-clusters-section mt-5 pt-3">
+    <div class="sub-clusters-container">
+        <h3 class="section-title"><?= $this->subClustersTitle ?: 'Sub Clusters' ?></h3>
+
+        <div class="sub-clusters-wrapper">
+            <!-- Sidebar -->
+            <div class="sub-clusters-sidebar">
+                <?php if ($this->sidebarCategories): ?>
+                    <?php foreach ($this->sidebarCategories as $category): ?>
+                    <div class="sidebar-item<?= $category['active'] ? ' active' : '' ?>" data-category="<?= htmlspecialchars($category['data-category']) ?>">
+                        <span class="sidebar-icon">
+                            <?php if ($category['icon']): ?>
+                                <img src="<?= $category['icon'] ?>" alt="<?= htmlspecialchars($category['name']) ?>">
+                            <?php else: ?>
+                                <img src="files/templates/images/mdi_legal.png" alt="icon">
+                            <?php endif; ?>
+                        </span>
+                        <span><?= htmlspecialchars($category['name']) ?></span>
+                    </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <!-- Default sidebar categories if no data provided -->
+                    <div class="sidebar-item active" data-category="hospitality">
+                        <span class="sidebar-icon"><img src="files/templates/images/mdi_legal.png" alt="icon"></span>
+                        <span>Hospitality & Gastronomy</span>
+                    </div>
+                    <div class="sidebar-item" data-category="amusement">
+                        <span class="sidebar-icon"><img src="files/templates/images/mdi_legal.png" alt="icon"></span>
+                        <span>Amusement Parks & Camping</span>
+                    </div>
+                    <div class="sidebar-item" data-category="sports">
+                        <span class="sidebar-icon"><img src="files/templates/images/mdi_legal.png" alt="icon"></span>
+                        <span>Sports & Clubs</span>
+                    </div>
+                    <div class="sidebar-item" data-category="ecommerce">
+                        <span class="sidebar-icon"><img src="files/templates/images/mdi_legal.png" alt="icon"></span>
+                        <span>E-Commerce & Retail</span>
+                    </div>
+                    <div class="sidebar-item" data-category="cities">
+                        <span class="sidebar-icon"><img src="files/templates/images/mdi_legal.png" alt="icon"></span>
+                        <span>Cities & Tourism</span>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Content -->
+            <div class="sub-clusters-content">
+                <?php if ($this->faq): ?>
+                    <?php
+                    $i = 1;
+                    foreach ($this->faq as $faqcat): ?>
+                        <?php foreach ($faqcat['items'] as $item): ?>
+                            <div class="accordion" id="accordion-faq-<?= $i ?>">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapseMain<?= $i; ?>" aria-expanded="false" aria-controls="collapseMain<?= $i; ?>">
+                                            <?= htmlspecialchars($item['question']) ?>
+                                        </button>
+                                    </h2>
+                                    <div id="collapseMain<?= $i; ?>" class="accordion-collapse collapse" data-bs-parent="#accordion-faq-<?= $i ?>">
+                                        <div class="accordion-body">
+                                            <?= $item['answer'] ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php $i++; endforeach; ?>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No FAQ data available.</p>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>

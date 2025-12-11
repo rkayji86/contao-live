@@ -1,0 +1,72 @@
+<!-- Clusters Section -->
+<div class="clusters-section pb-1 mb-4">
+    <div class="clusters-container">
+        <h3 class="section-title"><?= $this->clustersTitle ?: 'Clusters' ?></h3>
+        <div class="clusters-grid">
+            <?php if ($this->clusters): ?>
+                <?php foreach ($this->clusters as $cluster): ?>
+                <a href="<?= $cluster['url'] ?: '#' ?>" class="cluster-card">
+                    <div class="cluster-icon">
+                        <?php if ($cluster['icon']): ?>
+                            <img src="<?= $cluster['icon'] ?>" alt="<?= htmlspecialchars($cluster['title']) ?>">
+                        <?php else: ?>
+                            <img src="files/templates/images/mdi_legal.png" alt="icon">
+                        <?php endif; ?>
+                    </div>
+                    <h3 class="cluster-title"><?= htmlspecialchars($cluster['title']) ?></h3>
+                    <p class="cluster-description"><?= htmlspecialchars($cluster['description']) ?></p>
+                </a>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <!-- Default clusters if no data provided -->
+                <a href="#" class="cluster-card">
+                    <div class="cluster-icon">
+                        <img src="files/templates/images/mdi_legal.png" alt="icon">
+                    </div>
+                    <h3 class="cluster-title">Law & Regulation</h3>
+                    <p class="cluster-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt</p>
+                </a>
+                <a href="#" class="cluster-card">
+                    <div class="cluster-icon"> <img src="files/templates/images/mdi_legal.png" alt="icon"></div>
+                    <h3 class="cluster-title">Taxes & Accounting</h3>
+                    <p class="cluster-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt</p>
+                </a>
+                <a href="#" class="cluster-card">
+                    <div class="cluster-icon"> <img src="files/templates/images/mdi_legal.png" alt="icon"></div>
+                    <h3 class="cluster-title">Marketing & Conversion</h3>
+                    <p class="cluster-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt</p>
+                </a>
+                <a href="#" class="cluster-card">
+                    <div class="cluster-icon"> <img src="files/templates/images/mdi_legal.png" alt="icon"></div>
+                    <h3 class="cluster-title">Technology & Integration</h3>
+                    <p class="cluster-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt</p>
+                </a>
+                <a href="#" class="cluster-card">
+                    <div class="cluster-icon"> <img src="files/templates/images/mdi_legal.png" alt="icon"></div>
+                    <h3 class="cluster-title">User Experience (UX) & Design</h3>
+                    <p class="cluster-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt</p>
+                </a>
+                <a href="#" class="cluster-card">
+                    <div class="cluster-icon"> <img src="files/templates/images/mdi_legal.png" alt="icon"></div>
+                    <h3 class="cluster-title">History & Market</h3>
+                    <p class="cluster-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt</p>
+                </a>
+                <a href="#" class="cluster-card">
+                    <div class="cluster-icon"> <img src="files/templates/images/mdi_legal.png" alt="icon"></div>
+                    <h3 class="cluster-title">Use Cases & Industries</h3>
+                    <p class="cluster-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt</p>
+                </a>
+                <a href="#" class="cluster-card">
+                    <div class="cluster-icon"> <img src="files/templates/images/mdi_legal.png" alt="icon"></div>
+                    <h3 class="cluster-title">System & Platform (Internal)</h3>
+                    <p class="cluster-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt</p>
+                </a>
+                <a href="#" class="cluster-card">
+                    <div class="cluster-icon"> <img src="files/templates/images/mdi_legal.png" alt="icon"></div>
+                    <h3 class="cluster-title">International Validity Worldwide</h3>
+                    <p class="cluster-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt</p>
+                </a>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
