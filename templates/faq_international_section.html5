@@ -1,0 +1,48 @@
+<!-- International Section -->
+<div class="international-section">
+    <div class="international-container">
+        <h2 class="section-title"><?= $this->internationalTitle ?: 'International' ?></h2>
+        <div class="international-grid">
+            <?php if ($this->regions): ?>
+                <?php foreach ($this->regions as $region): ?>
+                <a href="<?= $region['url'] ?: '#' ?>" class="region-card">
+                    <div class="region-icon">
+                        <?php if ($region['icon']): ?>
+                            <img src="<?= $region['icon'] ?>" alt="<?= htmlspecialchars($region['name']) ?>">
+                        <?php else: ?>
+                            <img src="files/templates/images/mdi_legal.png" alt="icon">
+                        <?php endif; ?>
+                    </div>
+                    <div class="region-name"><?= htmlspecialchars($region['name']) ?></div>
+                </a>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <!-- Default regions if no data provided -->
+                <a href="#" class="region-card">
+                    <div class="region-icon"><img src="files/templates/images/mdi_legal.png" alt="icon"></div>
+                    <div class="region-name">North America</div>
+                </a>
+                <a href="#" class="region-card">
+                    <div class="region-icon"><img src="files/templates/images/mdi_legal.png" alt="icon"></div>
+                    <div class="region-name">Asia</div>
+                </a>
+                <a href="#" class="region-card">
+                    <div class="region-icon"><img src="files/templates/images/mdi_legal.png" alt="icon"></div>
+                    <div class="region-name">South America</div>
+                </a>
+                <a href="#" class="region-card">
+                    <div class="region-icon"><img src="files/templates/images/mdi_legal.png" alt="icon"></div>
+                    <div class="region-name">Africa</div>
+                </a>
+                <a href="#" class="region-card">
+                    <div class="region-icon"><img src="files/templates/images/mdi_legal.png" alt="icon"></div>
+                    <div class="region-name">Europe</div>
+                </a>
+                <a href="#" class="region-card">
+                    <div class="region-icon"><img src="files/templates/images/mdi_legal.png" alt="icon"></div>
+                    <div class="region-name">Australia</div>
+                </a>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>

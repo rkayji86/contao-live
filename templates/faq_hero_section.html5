@@ -1,0 +1,85 @@
+<!-- Hero/Search Section -->
+<div class="hero-section mb-5">
+    <div class="search-container">
+        <h1 class="search-title"><?= $this->heroTitle ?: 'How can we help?' ?></h1>
+
+        <div class="search-box mb-3">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="faq-search" placeholder="<?= $this->searchPlaceholder ?: 'Search for answers...' ?>" class="form-control">
+        </div>
+        
+       <div class="faq-items" id="faq-search-results" style="display:none;"></div>
+
+        <?php if ($this->popularTopics): ?>
+        <div class="popular-topics mb-5">
+            <span class="topics-title"><?= $this->topicsTitle ?: 'Popular Topics:' ?></span>
+            <?php foreach ($this->popularTopics as $topic): ?>
+            <button class="topic-btn"><?= $topic ?></button>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+    </div>
+</div>
+
+<script>
+const FAQ_SEARCH_URL = "<?= rtrim(\Contao\Environment::get('base'), '/') ?>/_faq/search";
+document.addEventListener('DOMContentLoaded', function () {
+    const input = document.getElementById('faq-search');
+    const resultsBox = document.getElementById('faq-search-results');
+
+    let controller = null;
+
+    function showResults(items) {
+        resultsBox.innerHTML = '';
+
+        if (!items.length) {
+            resultsBox.innerHTML = '<div class="no-results">No results found…</div>';
+        } else {
+            items.forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'faq-item';
+                el.innerHTML = `
+                    <i class="fas fa-search faq-icon"></i>
+                    <div class="faq-content">
+                        <div class="faq-question">${item.question}</div>
+                        <div class="faq-answer">${item.answer}</div>
+                    </div>
+                    <div class="faq-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                `;
+                resultsBox.appendChild(el);
+            });
+        }
+
+        resultsBox.style.display = 'block';
+        resultsBox.classList.add('show');
+    }
+
+    input.addEventListener('input', function () {
+        const q = this.value.trim();
+
+        if (q.length < 3) {
+            resultsBox.style.display = 'none';
+            return;
+        }
+
+        if (controller) controller.abort();
+        controller = new AbortController();
+
+        fetch(FAQ_SEARCH_URL + '?q=' + encodeURIComponent(q) + '&cluster=<?= urlencode($this->selectedCluster) ?>', {
+            signal: controller.signal
+        })
+        .then(r => {
+            return r.json();
+        })
+        .then(items => {
+            showResults(items);
+        })
+        .catch(err => {
+            if (err.name === 'AbortError') {
+                return;
+            }
+        });
+    });
+});
+</script>
+

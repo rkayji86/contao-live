@@ -1,0 +1,43 @@
+%space {
+    max-width: 2560px;
+    width: 100%;
+
+    padding: {
+        left: 140px;
+        right: 140px;
+    }
+
+    margin: {
+        left: auto;
+        right: auto;
+    }
+
+    @media(max-width: 1500px) {
+        padding: {
+            left: 70px;
+            right: 70px;
+        }
+    }
+
+    @media(max-width: 1300px) {
+        padding: {
+            left: 40px;
+            right: 40px;
+        }
+    }
+
+    @media(max-width: 768px) {
+        padding: {
+            left: 1.25rem;
+            right: 1.25rem;
+        }
+    }
+}
+
+%shadow {
+    box-shadow: 0 0 10px -3px rgba(0, 0, 0, 0.16);
+}
+
+%box-shadow {
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.16);
+}

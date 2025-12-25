@@ -1,0 +1,30 @@
+<div class="recent-questions-section">
+    <div class="recent-questions-container">
+<div class="faq-questions-section">
+    <?php if ($this->selectedCluster): ?>
+        <h2 class="mb-4"><?= htmlspecialchars($this->selectedCluster) ?></h2>
+    <?php endif; ?>
+
+    <?php foreach ($this->faq as $group): ?>
+        <div class="accordion" id="faqAccordion">
+            <?php foreach ($group['items'] as $i => $item): ?>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#faq<?= $i ?>">
+                            <span>Q<?= $i+1 ?>.</span> <?= $item['question'] ?>
+                        </button>
+                    </h2>
+                    <div id="faq<?= $i ?>" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                           <span>A.</span> <?= $item['answer'] ?>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endforeach; ?>
+</div>
+    </div>
+</div>

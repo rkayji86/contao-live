@@ -6,20 +6,20 @@ use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use GlobalScripts\GlobalScripts;
 use AutometaBundle\AutometaBundle;
-use Contao\ManagerPlugin\Routing\RoutingPluginInterface;
 use Contao\NewsBundle\ContaoNewsBundle;
 use FormAdd\FormAdd;
-use PageAdd\PageAdd;
 use FAQAdd\FAQAdd;
 use ContentElements\ContentElements;
 use CustomNews\CustomNewsBundle;
 use Digiwerft\ListViewSortable\ListViewSortableBundle;
 use Hofff\Contao\SocialTags\HofffContaoSocialTagsBundle;
-use Ivo21\EmailForContent\EmailForContentBundle;
+use ivo21\EmailForContent\EmailForContentBundle;
+use Terminal42\NotificationCenterBundle\NotificationCenter;
+
+use Contao\ManagerPlugin\Routing\RoutingPluginInterface;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouteCollection;
-use Terminal42\NotificationCenterBundle\NotificationCenter;
 
 class ContaoManagerPlugin implements BundlePluginInterface, RoutingPluginInterface
 {
@@ -39,12 +39,12 @@ class ContaoManagerPlugin implements BundlePluginInterface, RoutingPluginInterfa
             BundleConfig::create(EmailForContentBundle::class)->setLoadAfter([ContaoCoreBundle::class, NotificationCenter::class]),
         ];
     }
-
-    /**
-     * REMOVE ALL ROUTING. Your bundle does not need routing.
-     */
     public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel)
     {
-        return new RouteCollection();
+        $routingCollection = new RouteCollection();
+        $routingCollection->addCollection($resolver
+            ->resolve(__DIR__ . '/../src/ivo21/EmailForContent/Resources/config/routing.yaml')
+            ->load(__DIR__ . '/../src/ivo21/EmailForContent/Resources/config/routing.yaml'));
+        return $routingCollection;
     }
 }

@@ -257,15 +257,48 @@ h3,
 #header .inside .headerText {
   color: #ffffff;
   text-align: center;
-  font-size: 1.7rem;
+  font-size: 1.65rem;
 }
 @media (max-width: 767px) {
   #header .inside .headerText {
     display: none;
   }
 }
+#header .inside .nav-wrapper {
+  display: flex;
+  gap: 1rem;
+}
 #header .inside .nav-wrapper .toggle-nav .menu {
   display: block;
+}
+#header .inside .nav-wrapper .mod_changelanguage {
+  display: flex;
+  align-items: center;
+}
+#header .inside .nav-wrapper .mod_changelanguage ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+#header .inside .nav-wrapper .mod_changelanguage ul li {
+  margin: 0;
+  padding: 0;
+}
+#header .inside .nav-wrapper .mod_changelanguage ul li a {
+  display: block;
+  width: 25px;
+  height: 25px;
+  background-size: contain;
+  overflow: hidden;
+  text-indent: -99999px;
+}
+#header .inside .nav-wrapper .mod_changelanguage ul li a.lang-de {
+  background: url("../images/deutsch.png") center center no-repeat;
+  background-size: contain;
+}
+#header .inside .nav-wrapper .mod_changelanguage ul li a.lang-en {
+  background: url("../images/english.png") center center no-repeat;
+  background-size: contain;
 }
 @media (max-width: 992px) {
   #header .inside {

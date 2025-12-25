@@ -18,4 +18,5 @@ use PhpParser\Node\Stmt\Global_;
             </span>
         </a>
     </div>
+    {{insert_module::16}}
 </div>

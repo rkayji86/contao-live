@@ -4,12 +4,22 @@ namespace FAQAdd\Classes;
 
 use Contao\BackendTemplate;
 use Contao\Environment;
-use Contao\System;
-use Notion\Notion;
+use Contao\Input;
 
 class ModuleFaqAdd extends \Contao\Module
 {
     protected $strTemplate = 'mod_faqadd';
+    private $db;
+
+    public function __construct()
+    {
+        $currentAlias = $GLOBALS['objPage']->alias;
+
+        if (stripos($currentAlias, 'clusters') !== false) {
+            $this->strTemplate = 'mod_faqadd_clusters';
+        }
+        $this->db = \Database::getInstance();
+    }
 
     public function generate()
     {
@@ -28,97 +38,98 @@ class ModuleFaqAdd extends \Contao\Module
 
     protected function compile()
     {
-        $token      = $_ENV['NOTION_TOKEN'] ?? null;
-        $databaseId = $_ENV['NOTION_FAQ_DATABASE'] ?? null;
-        $notionFaq  = [];
+        // Detect frontend language (Contao standard)
+        $lang = $GLOBALS['TL_LANGUAGE'] ?? 'de';
 
-        if ($token && $databaseId) {
-            try {
-                $notion   = Notion::create($token);
-                $database = $notion->databases()->find($databaseId);
-                // Query database — this returns array of Page objects
-                $pages    = $notion->databases()->queryAllPages($database);
+        // Get selected cluster from URL parameter
+        $selectedCluster = Input::get('cluster');
+        $this->Template->hasClusterFilter = (bool) $selectedCluster;
+        $this->Template->selectedCluster = $selectedCluster;
+        $this->selectedCluster = $selectedCluster;
 
-                foreach ($pages as $page) {
-                    $props = $page->properties;
+        $db = $this->db;
 
-                    // Example: choose German if exists, else English
-                    $question = '';
-                    $answer   = '';
-                    $lang     = '';
+        // Fetch all FAQ records (adjust status filter if needed)
+        $sql = "
+                SELECT *
+                FROM tl_notion_faq
+                WHERE (status IS NULL OR status != 'deleted')
+            ";
 
-                    if (!empty($props['de_question']->text) && count($props['de_question']->text) > 0) {
-                        $question = $props['de_question']->text[0]->plainText;
-                        $lang     = 'de';
-                    } elseif (!empty($props['en_question']->text) && count($props['en_question']->text) > 0) {
-                        $question = $props['en_question']->text[0]->plainText;
-                        $lang     = 'en';
-                    }
+        $params = [];
 
-                    if (!empty($props['de_answer']->text) && count($props['de_answer']->text) > 0) {
-                        $answer = $props['de_answer']->text[0]->plainText;
-                    } elseif (!empty($props['en_answer']->text) && count($props['en_answer']->text) > 0) {
-                        $answer = $props['en_answer']->text[0]->plainText;
-                    }
-
-                    if ($question !== '' && $answer !== '') {
-                        $notionFaq[] = [
-                            'question' => $question,
-                            'answer'   => nl2br($answer),
-                            'class'    => '',
-                            'lang' => $lang
-                        ];
-                    }
-                }
-            } catch (\Throwable $e) {
-                $notionFaq[] = [
-                    'question' => 'Notion Error',
-                    'answer'   => $e->getMessage(),
-                    'class'    => 'error'
-                ];
-            }
+        if ($selectedCluster) {
+            $sql .= " AND maincluster = ?";
+            $params[] = $selectedCluster;
         }
 
-        
-        // Main FAQ data for sub-clusters section
+        $sql .= " ORDER BY id ASC";
+        $objFaqs = $db->prepare($sql)->execute(...$params);
+
+        $notionFaq = [];
+
+        while ($objFaqs->next()) {
+
+            // Language-based question/answer
+            if ($lang === 'de') {
+                $question = $objFaqs->de_question;
+                $answer   = $objFaqs->de_answer;
+            } else {
+                $question = $objFaqs->en_question;
+                $answer   = $objFaqs->en_answer;
+            }
+
+            if (!$question || !$answer) {
+                continue;
+            }
+
+            $notionFaq[] = [
+                'question' => $question,
+                'answer'   => nl2br($answer),
+                'class'    => '',
+                'lang'     => $lang
+            ];
+        }
+
+        // Main FAQ data
         $this->Template->faq = [
             [
-                'title' => 'FAQ - Notion Integrated',
+                'title' => 'FAQ',
                 'items' => $notionFaq,
                 'class' => ''
             ]
         ];
 
-        // Hero Section Data
+        // Hero Section
         $this->Template->heroTitle = $this->heroTitle ?: 'How can we help?';
         $this->Template->searchPlaceholder = $this->searchPlaceholder ?: 'Search for answers...';
         $this->Template->featuredItems = $this->getFeaturedItems($notionFaq);
         $this->Template->popularTopics = $this->getPopularTopics();
         $this->Template->topicsTitle = $this->topicsTitle ?: 'Popular Topics:';
 
-        // Clusters Section Data
+        // Clusters
         $this->Template->clustersTitle = $this->clustersTitle ?: 'Clusters';
         $this->Template->clusters = $this->getClusters();
 
-        // Recent Questions Section Data
+        // Recent Questions
         $this->Template->recentQuestionsTitle = $this->recentQuestionsTitle ?: 'Recently Asked Questions';
         $this->Template->recentQuestions = $this->getRecentQuestions($notionFaq);
 
-        // International Section Data
+        // International
         $this->Template->internationalTitle = $this->internationalTitle ?: 'International';
         $this->Template->regions = $this->getRegions();
 
-        // Sub Clusters Section Data
+        // Sub Clusters
         $this->Template->subClustersTitle = $this->subClustersTitle ?: 'Sub Clusters';
         $this->Template->sidebarCategories = $this->getSidebarCategories();
 
-                
-        // Render sub-templates and pass them to main template
+        // Render sub-templates
         $this->Template->heroSection = $this->renderSubTemplate('faq_hero_section');
         $this->Template->clustersSection = $this->renderSubTemplate('faq_clusters_section');
         $this->Template->recentQuestionsSection = $this->renderSubTemplate('faq_recent_questions');
         $this->Template->internationalSection = $this->renderSubTemplate('faq_international_section');
         $this->Template->subClustersSection = $this->renderSubTemplate('faq_sub_clusters_section');
+        $this->Template->questionsSection  = $this->renderSubTemplate('faq_questions_only');
     }
 
     /**
@@ -126,8 +137,6 @@ class ModuleFaqAdd extends \Contao\Module
      */
     private function getFeaturedItems($notionFaq)
     {
-        // You can customize this logic based on your needs
-        // For now, return first 4 items as featured
         return array_slice($notionFaq, 0, 4);
     }
 
@@ -136,71 +145,57 @@ class ModuleFaqAdd extends \Contao\Module
      */
     private function getPopularTopics()
     {
-        // You can customize this based on your data or make it configurable
         return ['History', 'Systems', 'Taxes', 'Marketing', 'Technology'];
     }
 
     /**
      * Get clusters data
      */
-    private function getClusters()
+    private function getClusters(): array
     {
-        return [
-            [
-                'title' => 'Law & Regulation',
+        $db = $this->db;
+        $page = \PageModel::findByPk($GLOBALS['objPage']->id);
+
+        // Find published clusters page
+        $clustersPage = \PageModel::findOneBy(
+            ['tl_page.alias=?', 'tl_page.published=?'],
+            ['clusters', '1']
+        );
+
+        // Fallback: try to find any page with 'clusters' in alias
+        if (!$clustersPage) {
+            $clustersPage = \PageModel::findOneBy(
+                ['tl_page.alias LIKE ?', 'tl_page.published=?'],
+                ['%clusters%', '1']
+            );
+        }
+
+        $activeCluster = \Contao\Input::get('cluster');
+
+        $objClusters = $db->execute("
+        SELECT DISTINCT maincluster
+        FROM tl_notion_faq
+        WHERE maincluster IS NOT NULL
+        AND maincluster != ''
+        AND (status IS NULL OR status != 'deleted')
+        ORDER BY maincluster
+    ");
+
+        $clusters = [];
+
+        while ($objClusters->next()) {
+            $clusters[] = [
+                'title'  => $objClusters->maincluster,
+                'url'    => $clustersPage
+                    ? $clustersPage->getAbsoluteUrl() . '?cluster=' . urlencode($objClusters->maincluster)
+                    : '#',
+                'active' => ($objClusters->maincluster === $activeCluster),
                 'description' => 'Legal frameworks and compliance requirements for voucher systems',
-                'url' => '#',
-                'icon' => 'files/templates/images/mdi_legal.png'
-            ],
-            [
-                'title' => 'Taxes & Accounting',
-                'description' => 'Tax implications and accounting practices for voucher programs',
-                'url' => '#',
-                'icon' => 'files/templates/images/mdi_legal.png'
-            ],
-            [
-                'title' => 'Marketing & Conversion',
-                'description' => 'Strategies for using vouchers to drive customer acquisition',
-                'url' => '#',
-                'icon' => 'files/templates/images/mdi_legal.png'
-            ],
-            [
-                'title' => 'Technology & Integration',
-                'description' => 'Technical implementation and system integration options',
-                'url' => '#',
-                'icon' => 'files/templates/images/mdi_legal.png'
-            ],
-            [
-                'title' => 'User Experience (UX) & Design',
-                'description' => 'Best practices for voucher user interface and experience',
-                'url' => '#',
-                'icon' => 'files/templates/images/mdi_legal.png'
-            ],
-            [
-                'title' => 'History & Market',
-                'description' => 'Evolution of voucher systems and market trends',
-                'url' => '#',
-                'icon' => 'files/templates/images/mdi_legal.png'
-            ],
-            [
-                'title' => 'Use Cases & Industries',
-                'description' => 'Industry-specific applications and case studies',
-                'url' => '#',
-                'icon' => 'files/templates/images/mdi_legal.png'
-            ],
-            [
-                'title' => 'System & Platform (Internal)',
-                'description' => 'Internal system architecture and platform management',
-                'url' => '#',
-                'icon' => 'files/templates/images/mdi_legal.png'
-            ],
-            [
-                'title' => 'International Validity Worldwide',
-                'description' => 'Cross-border voucher acceptance and international regulations',
-                'url' => '#',
-                'icon' => 'files/templates/images/mdi_legal.png'
-            ]
-        ];
+                'icon' => 'files/templates/images/mdi_legal.png',
+            ];
+        }
+
+        return $clusters;
     }
 
     /**
@@ -208,7 +203,6 @@ class ModuleFaqAdd extends \Contao\Module
      */
     private function getRecentQuestions($notionFaq)
     {
-        // Return first 5 items as recent questions
         return array_slice($notionFaq, 0, 5);
     }
 
@@ -232,13 +226,102 @@ class ModuleFaqAdd extends \Contao\Module
      */
     private function getSidebarCategories()
     {
-        return [
-            ['name' => 'Hospitality & Gastronomy', 'data-category' => 'hospitality', 'active' => true, 'icon' => 'files/templates/images/mdi_legal.png'],
-            ['name' => 'Amusement Parks & Camping', 'data-category' => 'amusement', 'active' => false, 'icon' => 'files/templates/images/mdi_legal.png'],
-            ['name' => 'Sports & Clubs', 'data-category' => 'sports', 'active' => false, 'icon' => 'files/templates/images/mdi_legal.png'],
-            ['name' => 'E-Commerce & Retail', 'data-category' => 'ecommerce', 'active' => false, 'icon' => 'files/templates/images/mdi_legal.png'],
-            ['name' => 'Cities & Tourism', 'data-category' => 'cities', 'active' => false, 'icon' => 'files/templates/images/mdi_legal.png']
-        ];
+        $db = $this->db;
+        $objSubClusters = $db->execute("
+            SELECT DISTINCT subcluster
+            FROM tl_notion_faq
+            WHERE subcluster IS NOT NULL
+            AND subcluster != ''
+            AND (status IS NULL OR status != 'deleted')
+            ORDER BY subcluster
+        ");
+
+        while ($objSubClusters->next()) {
+            $categories[] = [
+                'name' => $objSubClusters->subcluster,
+                'data-category' => strtolower(str_replace(' ', '_', $objSubClusters->subcluster)),
+                'active' => false,
+                'icon' => 'files/templates/images/mdi_legal.png',
+            ];
+        }
+
+        if (!empty($categories)) {
+            $categories[0]['active'] = true;
+        }
+
+        return $categories;
+
+        // return [
+        //     ['name' => 'Hospitality & Gastronomy', 'data-category' => 'hospitality', 'active' => true, 'icon' => 'files/templates/images/mdi_legal.png'],
+        //     ['name' => 'Amusement Parks & Camping', 'data-category' => 'amusement', 'active' => false, 'icon' => 'files/templates/images/mdi_legal.png'],
+        //     ['name' => 'Sports & Clubs', 'data-category' => 'sports', 'active' => false, 'icon' => 'files/templates/images/mdi_legal.png'],
+        //     ['name' => 'E-Commerce & Retail', 'data-category' => 'ecommerce', 'active' => false, 'icon' => 'files/templates/images/mdi_legal.png'],
+        //     ['name' => 'Cities & Tourism', 'data-category' => 'cities', 'active' => false, 'icon' => 'files/templates/images/mdi_legal.png']
+        // ];
+    }
+
+    /**
+     * Get grouped FAQ for sub-clusters
+     */
+    private function getGroupedFaq()
+    {
+        $lang = $GLOBALS['TL_LANGUAGE'] ?? 'de';
+        $db = $this->db;
+
+        $sql = "
+            SELECT *
+            FROM tl_notion_faq
+            WHERE (status IS NULL OR status != 'deleted')
+        ";
+
+        $params = [];
+
+        if ($this->selectedCluster) {
+            $sql .= " AND maincluster = ?";
+            $params[] = $this->selectedCluster;
+        }
+
+        $sql .= " ORDER BY subcluster, id ASC";
+
+        $objFaqs = $db->prepare($sql)->execute(...$params);
+
+        $grouped = [];
+
+        while ($objFaqs->next()) {
+            if ($lang === 'de') {
+                $question = $objFaqs->de_question;
+                $answer = $objFaqs->de_answer;
+            } else {
+                $question = $objFaqs->en_question;
+                $answer = $objFaqs->en_answer;
+            }
+
+            if (!$question || !$answer) continue;
+
+            $sub = $objFaqs->subcluster ?: 'Other';
+
+            if (!isset($grouped[$sub])) {
+                $grouped[$sub] = [];
+            }
+
+            $grouped[$sub][] = [
+                'question' => $question,
+                'answer' => nl2br($answer),
+                'subcluster' => $sub
+            ];
+        }
+
+        $result = [];
+
+        foreach ($grouped as $sub => $items) {
+            $result[] = [
+                'title' => $sub,
+                'items' => $items,
+                'class' => ''
+            ];
+        }
+
+        return $result;
     }
 
     /**
@@ -248,9 +331,8 @@ class ModuleFaqAdd extends \Contao\Module
     {
         $subTemplate = new \Contao\FrontendTemplate($templateName);
 
-        // Set the FAQ data explicitly for sub-clusters section
         if ($templateName === 'faq_sub_clusters_section') {
-            $subTemplate->faq = $this->Template->faq;
+            $subTemplate->faq = $this->getGroupedFaq();
             $subTemplate->subClustersTitle = $this->Template->subClustersTitle;
             $subTemplate->sidebarCategories = $this->Template->sidebarCategories;
         } elseif ($templateName === 'faq_recent_questions') {
@@ -265,8 +347,15 @@ class ModuleFaqAdd extends \Contao\Module
             $subTemplate->featuredItems = $this->Template->featuredItems;
             $subTemplate->popularTopics = $this->Template->popularTopics;
             $subTemplate->topicsTitle = $this->Template->topicsTitle;
+        }elseif ($templateName === 'faq_clusters_section') {
+            $subTemplate->clusters = $this->Template->clusters;
+            $subTemplate->clustersTitle = $this->Template->clustersTitle;
+            $subTemplate->selectedCluster = $this->Template->selectedCluster;
+        } elseif($templateName === 'faq_questions_only') {
+            $subTemplate->selectedCluster = $this->Template->selectedCluster;
+            $subTemplate->faq = $this->Template->faq;
         }
-        
+
         return $subTemplate->parse();
     }
 }

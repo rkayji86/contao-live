@@ -5,7 +5,8 @@
         <div class="clusters-grid">
             <?php if ($this->clusters): ?>
                 <?php foreach ($this->clusters as $cluster): ?>
-                <a href="<?= $cluster['url'] ?: '#' ?>" class="cluster-card">
+                <a href="<?= $cluster['url'] ?>"
+                    class="cluster-card<?= !empty($cluster['active']) ? ' active' : '' ?>">
                     <div class="cluster-icon">
                         <?php if ($cluster['icon']): ?>
                             <img src="<?= $cluster['icon'] ?>" alt="<?= htmlspecialchars($cluster['title']) ?>">

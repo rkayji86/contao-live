@@ -1,0 +1,4 @@
+services:
+  FAQAdd\Controller\FaqSearchController:
+    public: true
+    tags: ['controller.service_arguments']

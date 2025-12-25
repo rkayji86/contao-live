@@ -1,0 +1,98 @@
+html,body {
+    height: 100%;
+}
+
+body {
+    background: url(/files/templates/images/be/bg.jpg) fixed;
+    background-size: cover;
+}
+
+#container {
+    margin: 0;
+}
+
+#main {
+    border-radius: 20px;
+    background: rgba(0,0,0,0.6);
+    padding-top: 10px;
+    box-shadow: 0 0 10px #fff, 0 0 10px #fff;
+    border: 2px solid #fff;
+    margin-top: calc(50vh - 133px);
+    max-width: 320px;
+}
+
+#main.pw {
+    margin-top: calc(50vh - 148px);
+}
+
+#main.pw h1,
+#main.pw p{
+    color: #fff;
+    text-align: center;
+    margin: 0;
+}
+
+#main.error {
+    margin-top: calc(50vh - 175px);
+}
+
+#main.pw.error {
+    margin-top: calc(50vh - 180px);
+}
+
+.logo {
+    background: url(/files/templates/images/be/logo.svg);
+    width: 206px;
+    height: 50px;
+    padding: 0;
+    margin: 10px auto;
+    background-size: 100% auto;
+    display: block;
+}
+
+.formbody {
+    padding: 20px;
+}
+
+.formbody label {
+    top: 15px;
+}
+
+.formbody input {
+    border-radius: 5px;
+    margin: 5px 0;
+    padding: 10px 10px;
+    border: none;
+}
+
+.formbody button.tl_submit {
+    border-radius: 5px;
+    background: #0d86d1;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    border: none;
+    float: right;
+    text-shadow: 1px 1px 1px #000,-1px -1px 1px #000,-1px 1px 1px #000,1px -1px 1px #000;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.formbody .submit_container a {
+    float: left;
+    color: #fff;
+}
+
+.tl_message {
+background: rgba(0,0,0,0.6);
+    border-radius: 0 0 20px 20px;
+    padding: 10px;
+    margin-top: 0;
+    border-top: 2px solid #c33;
+}
+
+.tl_message p.tl_error {
+    margin-bottom: 0;
+    line-height: 18px;
+    font-size: 14px;
+}

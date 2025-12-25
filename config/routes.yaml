@@ -1,0 +1,3 @@
+faq_add_routes:
+  resource: '../src/FAQAdd/Resources/contao/config/routes.yaml'
+  type: yaml
