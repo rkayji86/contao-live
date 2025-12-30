@@ -51,7 +51,7 @@
                     $i = 1;
                     foreach ($this->faq as $faqcat): ?>
                         <?php foreach ($faqcat['items'] as $item): ?>
-                            <div class="accordion" id="accordion-faq-<?= $i ?>" data-category="<?= htmlspecialchars(strtolower(str_replace(' ', '_', $faqcat['title']))) ?>">
+                            <div class="accordion" id="accordion-faq-<?= $i ?>" data-category="<?= mb_strtolower(str_replace(' ', '-', $faqcat['title']), 'UTF-8') ?>">
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
                                         <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapseMain<?= $i; ?>" aria-expanded="false" aria-controls="collapseMain<?= $i; ?>">

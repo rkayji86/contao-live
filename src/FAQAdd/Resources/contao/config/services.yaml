@@ -2,3 +2,6 @@ services:
   FAQAdd\Controller\FaqSearchController:
     public: true
     tags: ['controller.service_arguments']
+  FAQAdd\Controller\NotionWebhookController:
+    public: true
+    tags: ['controller.service_arguments']

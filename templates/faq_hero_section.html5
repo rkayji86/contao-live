@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (controller) controller.abort();
         controller = new AbortController();
 
-        fetch(FAQ_SEARCH_URL + '?q=' + encodeURIComponent(q) + '&cluster=<?= urlencode($this->selectedCluster) ?>', {
+        fetch(FAQ_SEARCH_URL + '?q=' + encodeURIComponent(q) + '&cluster=<?= urlencode($this->selectedCluster) ?>' + '&lang=<?= isset($GLOBALS['objPage']) ? substr($GLOBALS['objPage']->language, 0, 2) : 'de' ?>', {
             signal: controller.signal
         })
         .then(r => {

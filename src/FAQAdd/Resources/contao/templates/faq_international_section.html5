@@ -8,12 +8,12 @@
                 <a href="<?= $region['url'] ?: '#' ?>" class="region-card">
                     <div class="region-icon">
                         <?php if ($region['icon']): ?>
-                            <img src="<?= $region['icon'] ?>" alt="<?= htmlspecialchars($region['name']) ?>">
+                            <img src="<?= $region['icon'] ?>" alt="<?= str_replace('-continent', '', htmlspecialchars($region['name'])) ?>">
                         <?php else: ?>
                             <img src="files/templates/images/mdi_legal.png" alt="icon">
                         <?php endif; ?>
                     </div>
-                    <div class="region-name"><?= htmlspecialchars($region['name']) ?></div>
+                    <div class="region-name"><?= str_replace('-continent', '', htmlspecialchars($region['name'])) ?></div>
                 </a>
                 <?php endforeach; ?>
             <?php else: ?>

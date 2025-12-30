@@ -13,7 +13,7 @@ class FaqSearchController extends AbstractController
     {
         $query = trim($request->get('q'));
         $cluster = $request->get('cluster');
-        $lang = $request->getLocale() ?? 'de';
+        $lang = $request->get('lang', $request->getLocale() ?? 'de');
 
         if (mb_strlen($query) < 3) {
             return new JsonResponse([]);

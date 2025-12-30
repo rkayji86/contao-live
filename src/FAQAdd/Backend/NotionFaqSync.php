@@ -5,17 +5,19 @@ namespace FAQAdd\Backend;
 use Contao\Backend;
 use Contao\Message;
 use Contao\Controller;
-use FAQAdd\Service\NotionFaqSyncService;
+use Contao\System;
 
 class NotionFaqSync extends Backend
 {
     /**
      * Trigger manual sync
      */
+
     public function run(): void
     {
         try {
-            $service = new NotionFaqSyncService();
+            /** @var \FAQAdd\Service\NotionFaqSyncService $service */
+            $service = System::getContainer()->get(\FAQAdd\Service\NotionFaqSyncService::class);
             $result = $service->sync();
 
             Message::addConfirmation(sprintf(

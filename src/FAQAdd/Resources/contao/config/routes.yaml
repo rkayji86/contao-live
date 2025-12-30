@@ -3,3 +3,11 @@ faq_search:
   controller: FAQAdd\Controller\FaqSearchController::search
   defaults:
     _scope: frontend
+
+notion_webhook:
+  path: /_notion/faq
+  controller: FAQAdd\Controller\NotionWebhookController::webhookAPI
+  methods: [POST]
+  defaults:
+    _scope: frontend
+    _token_check: false

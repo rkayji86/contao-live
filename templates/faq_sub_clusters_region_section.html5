@@ -1,0 +1,479 @@
+<style>
+    .sub-clusters-section {
+        padding: 2rem 0;
+    }
+
+    .section-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 1.5rem;
+    }
+
+    .sub-clusters-wrapper {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .sub-clusters-sidebar {
+        background: #fff;
+        border-radius: 8px;
+        padding: 0;
+        /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); */
+        flex-shrink: 0;
+        min-width: 280px;
+    }
+
+    .sub-clusters-content {
+        flex: 1;
+        border-radius: 12px;
+        height: fit-content;
+    }
+
+    /* Dropdown Styles */
+    .cluster-dropdown-wrapper {
+        position: relative;
+    }
+
+    .cluster-dropdown-button {
+        width: 100%;
+        padding: 0.875rem 1.25rem;
+        background:#0074C1;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .cluster-dropdown-button:hover {
+        background: #0052a3;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .cluster-dropdown-button .dropdown-content {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .cluster-dropdown-button .dropdown-icon {
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .country-dropdown-arrow{
+        background: #F2F9FD;
+        padding: 5px;
+        border-radius: 8px;
+    }
+
+    .cluster-dropdown-button .dropdown-arrow {
+        width: 20px;
+        height: 20px;
+        transition: transform 0.2s ease;
+    }
+
+    .cluster-dropdown-button.open .dropdown-arrow {
+        transform: rotate(180deg);
+    }
+
+    .cluster-dropdown-menu {
+        /* position: absolute;
+        top: calc(100% + 0.5rem);
+        left: 0;
+        right: 0; */
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        max-height: 320px;
+        overflow-y: auto;
+        z-index: 19;
+        display: none;
+        border: 1px solid #e5e7eb;
+    }
+
+    .cluster-dropdown-menu.show {
+        display: block;
+    }
+
+    .cluster-dropdown-item {
+        padding: 0.875rem 1.25rem;
+        cursor: pointer;
+        transition: background 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        border-bottom: 1px solid #e5e7eb;
+        color: #374151;
+        font-size: 15px;
+    }
+
+    .cluster-dropdown-item:last-child {
+        border-bottom: none;
+    }
+
+    .cluster-dropdown-item:hover {
+        background: #f3f4f6;
+    }
+
+    .cluster-dropdown-item .dropdown-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* Country List Styles */
+    .country-list {
+        margin-top: 20px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .country-item {
+        padding: 1rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border-bottom: 1px solid #e5e7eb;
+        font-size: 15px;
+        color: #374151;
+        background: white;
+    }
+
+    .country-item:last-child {
+        border-bottom: none;
+    }
+
+    .country-item:hover {
+        background: #f9fafb;
+    }
+
+    .country-item.active {
+        background: #eff6ff;
+        border-left: 3px solid #0066cc;
+        font-weight: 500;
+        color: #0066cc;
+        padding-left: calc(1.25rem - 3px);
+    }
+
+    .sidebar-icon {
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .sidebar-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    /* Accordion Styles */
+    .sub-clusters-content .accordion {
+        /* margin-bottom: 0.75rem; */
+        border-radius: 0px;
+    }
+
+    .sub-clusters-content .accordion:last-child {
+        margin-bottom: 0;
+    }
+
+    .sub-clusters-content .accordion-item {
+        border: 1px solid #e5e7eb;
+        border-radius: 0px;
+        overflow: hidden;
+    }
+
+    .sub-clusters-content .accordion-button {
+        font-size: 15px;
+        font-weight: 500;
+        color: #1f2937;
+        padding: 1rem 1.25rem;
+    }
+
+    .sub-clusters-content .accordion-button:not(.collapsed) {
+        /* background-color: #f9fafb; */
+        color: #333;
+    }
+
+    .sub-clusters-content .accordion-body {
+        padding: 1.25rem;
+        font-size: 14px;
+        line-height: 1.6;
+        color: #4b5563;
+        border: 0px;
+        padding-top: 0px;
+    }
+</style>
+
+<!-- Sub Clusters Section -->
+<div class="sub-clusters-section mt-5 pt-3">
+    <div class="sub-clusters-container">
+        <h3 class="section-title"><?= $this->subClustersTitle ?: 'Sub Clusters' ?></h3>
+
+        <div class="sub-clusters-wrapper">
+            <!-- Sidebar -->
+            <div class="sub-clusters-sidebar">
+                <?php if ($this->sidebarCategories): ?>
+                    <?php
+                    // Group categories by maincluster
+                    $groupedCategories = [];
+                    foreach ($this->sidebarCategories as $category) {
+                        $cluster = $category['maincluster'] ?? 'other';
+                        if (!isset($groupedCategories[$cluster])) {
+                            $groupedCategories[$cluster] = [];
+                        }
+                        $groupedCategories[$cluster][] = $category;
+                    }
+
+                    $firstCluster = array_key_first($groupedCategories);
+                    ?>
+
+                    <!-- Cluster Dropdown -->
+                    <div class="cluster-dropdown-wrapper">
+                        <button class="cluster-dropdown-button" id="clusterDropdownBtn">
+                            <span class="dropdown-content">
+                                <!-- <span class="dropdown-icon">
+                                    <img src="files/templates/images/mdi_legal.png" alt="icon">
+                                </span> -->
+                                <span class="dropdown-text"><?= ucwords(str_replace('-', ' ', htmlspecialchars($firstCluster))) ?></span>
+                            </span>
+                            <div class="country-dropdown-arrow">
+                                <svg class="dropdown-arrow" fill="none" stroke="#0074C1" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                            </div>
+                        </button>
+
+                        <!-- <div class="cluster-dropdown-menu">
+                            <?php foreach ($groupedCategories as $clusterName => $categories): ?>
+                                <div class="cluster-dropdown-item" 
+                                    data-cluster="<?= htmlspecialchars($clusterName) ?>">
+                                    <span class="dropdown-icon">
+                                        <img src="files/templates/images/mdi_legal.png" alt="icon">
+                                    </span>
+                                    <span><?= ucwords(str_replace('-', ' ', htmlspecialchars($clusterName))) ?></span>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>  -->
+
+                    <!-- Country List -->
+                        <div class="country-list cluster-dropdown-menu" id="clusterDropdownMenu">
+                        <?php 
+                        foreach ($groupedCategories as $clusterName => $categories): 
+                        ?>
+                            <?php foreach ($categories as $category): ?>
+                                <div class="country-item"
+                                    data-category="<?= htmlspecialchars(mb_strtolower(str_replace(' ', '-', $category['slug']), 'UTF-8')) ?>"
+                                    data-maincluster="<?= htmlspecialchars($clusterName) ?>"
+                                    data-cluster-group="<?= htmlspecialchars($clusterName) ?>"
+                                    style="<?= $clusterName !== $firstCluster ? 'display: none;' : '' ?>">
+                                    <?= htmlspecialchars($category['name']) ?>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endforeach; ?>
+                    </div>
+                    </div>
+
+                <?php else: ?>
+                    <!-- Default if no data provided -->
+                    <div class="cluster-dropdown-wrapper">
+                        <button class="cluster-dropdown-button" id="clusterDropdownBtn">
+                            <span class="dropdown-content">
+                                <span class="dropdown-icon">
+                                    <img src="files/templates/images/mdi_legal.png" alt="icon">
+                                </span>
+                                <span class="dropdown-text">Hospitality</span>
+                            </span>
+                            <svg class="dropdown-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="country-list">
+                        <div class="country-item" data-category="hospitality">Hospitality & Gastronomy</div>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Content -->
+            <div class="sub-clusters-content">
+                <?php if ($this->faq): ?>
+                    <?php
+                    $i = 1;
+                    foreach ($this->faq as $faqcat): ?>
+                        <?php foreach ($faqcat['items'] as $item): ?>
+                            <div class="accordion" id="accordion-faq-<?= $i ?>"
+                                data-category="<?= htmlspecialchars(mb_strtolower(str_replace(' ', '-', $item['subcluster'] ?? $faqcat['title']), 'UTF-8')) ?>"
+                                data-maincluster="<?= htmlspecialchars($item['maincluster'] ?? '') ?>">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#collapseMain<?= $i; ?>"
+                                            aria-expanded="false"
+                                            aria-controls="collapseMain<?= $i; ?>">
+                                            <?= htmlspecialchars($item['question']) ?>
+                                        </button>
+                                    </h2>
+                                    <div id="collapseMain<?= $i; ?>"
+                                        class="accordion-collapse collapse"
+                                        data-bs-parent="#accordion-faq-<?= $i ?>">
+                                        <div class="accordion-body">
+                                            <?= $item['answer'] ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php $i++;
+                        endforeach; ?>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No FAQ data available.</p>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropdownBtn = document.getElementById('clusterDropdownBtn');
+        const dropdownMenu = document.getElementById('clusterDropdownMenu');
+        const dropdownItems = document.querySelectorAll('.cluster-dropdown-item');
+        const countryItems = document.querySelectorAll('.country-item');
+        const accordions = document.querySelectorAll('.sub-clusters-content .accordion');
+
+        let currentCluster = dropdownBtn ? dropdownBtn.querySelector('.dropdown-text').textContent.toLowerCase().replace(/ /g, '-') : '';
+
+        // Function to update dropdown items visibility
+        function updateDropdownItems() {
+            dropdownItems.forEach(item => {
+                const cluster = item.getAttribute('data-cluster');
+                if (cluster === currentCluster) {
+                    item.style.display = 'none';
+                } else {
+                    item.style.display = 'flex';
+                }
+            });
+        }
+
+        // Initialize dropdown items visibility
+        updateDropdownItems();
+
+        // Toggle dropdown
+        if (dropdownBtn) {
+            dropdownBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                
+                // If dropdown is currently closed, we're opening it - just toggle
+                if (!dropdownBtn.classList.contains('open')) {
+                    dropdownBtn.classList.add('open');
+                    dropdownMenu.classList.add('show');
+                } else {
+                    // If dropdown is open, close it
+                    dropdownBtn.classList.remove('open');
+                    dropdownMenu.classList.remove('show');
+                }
+                
+                // Also reset to show all content from current cluster
+                countryItems.forEach(c => c.classList.remove('active'));
+                showCategory(currentCluster, true);
+            });
+        }
+
+        // Close dropdown when clicking outside
+        //document.addEventListener('click', function(e) {
+        //    if (dropdownMenu && !dropdownMenu.contains(e.target) && e.target !== dropdownBtn) {
+        //        dropdownBtn.classList.remove('open');
+        //        dropdownMenu.classList.remove('show');
+        //    }
+        //});
+
+        // Handle dropdown item selection
+        dropdownItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const cluster = this.getAttribute('data-cluster');
+                const clusterText = this.textContent.trim();
+                
+                // Update button text
+                if (dropdownBtn) {
+                    dropdownBtn.querySelector('.dropdown-text').textContent = clusterText;
+                }
+                
+                // Close dropdown
+                dropdownBtn.classList.remove('open');
+                dropdownMenu.classList.remove('show');
+                
+                // Update current cluster
+                currentCluster = cluster;
+                
+                // Update dropdown items visibility
+                updateDropdownItems();
+                
+                // Show/hide countries based on cluster
+                countryItems.forEach(country => {
+                    country.classList.remove('active');
+                    if (country.getAttribute('data-cluster-group') === cluster) {
+                        country.style.display = 'block';
+                    } else {
+                        country.style.display = 'none';
+                    }
+                });
+                
+                // Show all content from this cluster
+                showCategory(cluster, true);
+            });
+        });
+
+        // Handle country item selection
+        countryItems.forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove active from all country items
+                countryItems.forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+
+                const category = this.getAttribute('data-category');
+                showCategory(category, false);
+            });
+        });
+
+        function showCategory(category, isCluster = false) {
+            accordions.forEach(acc => {
+                const accCategory = acc.getAttribute('data-category');
+                const accMainCluster = acc.getAttribute('data-maincluster');
+
+                if (isCluster) {
+                    // Show all items from this main cluster
+                    if (accMainCluster === category) {
+                        acc.style.display = 'block';
+                    } else {
+                        acc.style.display = 'none';
+                    }
+                } else {
+                    // Show only specific subcluster
+                    if (accCategory === category) {
+                        acc.style.display = 'block';
+                    } else {
+                        acc.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // Initialize: Show all content from first cluster
+        showCategory(currentCluster, true);
+    });
+</script>

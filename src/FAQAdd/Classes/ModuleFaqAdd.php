@@ -15,7 +15,7 @@ class ModuleFaqAdd extends \Contao\Module
     {
         $currentAlias = $GLOBALS['objPage']->alias;
 
-        if (stripos($currentAlias, 'clusters') !== false) {
+        if ((stripos($currentAlias, 'clusters') !== false) || (stripos($currentAlias, 'international') !== false)) {
             $this->strTemplate = 'mod_faqadd_clusters';
         }
         $this->db = \Database::getInstance();
@@ -47,6 +47,12 @@ class ModuleFaqAdd extends \Contao\Module
         $this->Template->selectedCluster = $selectedCluster;
         $this->selectedCluster = $selectedCluster;
 
+        // Get selected international from URL parameter
+        $selectedInternational = Input::get('region');
+        $this->Template->hasInternationalFilter = (bool) $selectedInternational;
+        $this->Template->selectedInternational = $selectedInternational;
+        $this->selectedInternational = $selectedInternational;
+
         $db = $this->db;
 
         // Fetch all FAQ records (adjust status filter if needed)
@@ -61,6 +67,11 @@ class ModuleFaqAdd extends \Contao\Module
         if ($selectedCluster) {
             $sql .= " AND maincluster = ?";
             $params[] = $selectedCluster;
+        }
+
+        if ($selectedInternational) {
+            $sql .= " AND maincluster = ?";
+            $params[] = $selectedInternational;
         }
 
         $sql .= " ORDER BY id ASC";
@@ -120,7 +131,7 @@ class ModuleFaqAdd extends \Contao\Module
         $this->Template->regions = $this->getRegions();
 
         // Sub Clusters
-        $this->Template->subClustersTitle = $this->subClustersTitle ?: 'Sub Clusters';
+        $this->Template->subClustersTitle =  $selectedInternational ? 'Countries' : ($this->subClustersTitle ? $this->subClustersTitle : 'Sub Clusters');
         $this->Template->sidebarCategories = $this->getSidebarCategories();
 
         // Render sub-templates
@@ -129,6 +140,7 @@ class ModuleFaqAdd extends \Contao\Module
         $this->Template->recentQuestionsSection = $this->renderSubTemplate('faq_recent_questions');
         $this->Template->internationalSection = $this->renderSubTemplate('faq_international_section');
         $this->Template->subClustersSection = $this->renderSubTemplate('faq_sub_clusters_section');
+        $this->Template->subClustersRegionSection = $this->renderSubTemplate('faq_sub_clusters_region_section');
         $this->Template->questionsSection  = $this->renderSubTemplate('faq_questions_only');
     }
 
@@ -176,8 +188,9 @@ class ModuleFaqAdd extends \Contao\Module
         SELECT DISTINCT maincluster
         FROM tl_notion_faq
         WHERE maincluster IS NOT NULL
-        AND maincluster != ''
-        AND (status IS NULL OR status != 'deleted')
+          AND maincluster != ''
+          AND (status IS NULL OR status != 'deleted')
+          AND maincluster NOT LIKE '%continent%'
         ORDER BY maincluster
     ");
 
@@ -185,13 +198,11 @@ class ModuleFaqAdd extends \Contao\Module
 
         while ($objClusters->next()) {
             $clusters[] = [
-                'title'  => $objClusters->maincluster,
-                'url'    => $clustersPage
-                    ? $clustersPage->getAbsoluteUrl() . '?cluster=' . urlencode($objClusters->maincluster)
-                    : '#',
-                'active' => ($objClusters->maincluster === $activeCluster),
+                'title'       => $objClusters->maincluster,
+                'url'         => $clustersPage->getAbsoluteUrl() . '?cluster=' . urlencode($objClusters->maincluster),
+                'active'      => ($objClusters->maincluster === $activeCluster),
                 'description' => 'Legal frameworks and compliance requirements for voucher systems',
-                'icon' => 'files/templates/images/mdi_legal.png',
+                'icon'        => 'files/templates/images/mdi_legal.png',
             ];
         }
 
@@ -211,14 +222,47 @@ class ModuleFaqAdd extends \Contao\Module
      */
     private function getRegions()
     {
-        return [
-            ['name' => 'North America', 'url' => '#', 'icon' => 'files/templates/images/mdi_legal.png'],
-            ['name' => 'Asia', 'url' => '#', 'icon' => 'files/templates/images/mdi_legal.png'],
-            ['name' => 'South America', 'url' => '#', 'icon' => 'files/templates/images/mdi_legal.png'],
-            ['name' => 'Africa', 'url' => '#', 'icon' => 'files/templates/images/mdi_legal.png'],
-            ['name' => 'Europe', 'url' => '#', 'icon' => 'files/templates/images/mdi_legal.png'],
-            ['name' => 'Australia', 'url' => '#', 'icon' => 'files/templates/images/mdi_legal.png']
-        ];
+        $db = $this->db;
+
+        // Find published clusters page
+        $clustersPage = \PageModel::findOneBy(
+            ['tl_page.alias=?', 'tl_page.published=?'],
+            ['international', '1']
+        );
+
+        // Fallback: try to find any page with 'clusters' in alias
+        if (!$clustersPage) {
+            $clustersPage = \PageModel::findOneBy(
+                ['tl_page.alias LIKE ?', 'tl_page.published=?'],
+                ['%international%', '1']
+            );
+        }
+
+        $activeCluster = \Contao\Input::get('region');
+
+        $objClusters = $db->execute("
+        SELECT DISTINCT maincluster
+        FROM tl_notion_faq
+        WHERE maincluster IS NOT NULL
+        AND maincluster != ''
+        AND (status IS NULL OR status != 'deleted')
+        AND maincluster LIKE '%continent%'
+        ORDER BY maincluster
+    ");
+
+        $clusters = [];
+
+        while ($objClusters->next()) {
+            $clusters[] = [
+                'name'  => $objClusters->maincluster,
+                'url'    => $clustersPage
+                    ? $clustersPage->getAbsoluteUrl() . '?region=' . urlencode($objClusters->maincluster)
+                    : '#',
+                'active' => ($objClusters->maincluster === $activeCluster),
+            ];
+        }
+
+        return $clusters;
     }
 
     /**
@@ -227,37 +271,54 @@ class ModuleFaqAdd extends \Contao\Module
     private function getSidebarCategories()
     {
         $db = $this->db;
-        $objSubClusters = $db->execute("
-            SELECT DISTINCT subcluster
+        $selectedCluster = \Contao\Input::get('cluster');
+        $selectedRegion = \Contao\Input::get('region');
+
+        $sql = "
+            SELECT DISTINCT maincluster, subcluster
             FROM tl_notion_faq
             WHERE subcluster IS NOT NULL
             AND subcluster != ''
             AND (status IS NULL OR status != 'deleted')
-            ORDER BY subcluster
-        ");
+        ";
 
-        while ($objSubClusters->next()) {
+        $params = [];
+
+        if ($selectedCluster) {
+            $sql .= " AND maincluster = ?";
+            $params[] = $selectedCluster;
+        }
+
+        if ($selectedRegion) {
+            $sql .= " AND maincluster = ?";
+            $params[] = $selectedRegion;
+        }
+
+        $sql .= " ORDER BY maincluster, subcluster";
+
+        $stmt = $db->prepare($sql)->execute(...$params);
+
+        $categories = [];
+
+        while ($stmt->next()) {
+            $slug = strtolower(\StringUtil::standardize($stmt->subcluster));
+
             $categories[] = [
-                'name' => $objSubClusters->subcluster,
-                'data-category' => strtolower(str_replace(' ', '_', $objSubClusters->subcluster)),
-                'active' => false,
-                'icon' => 'files/templates/images/mdi_legal.png',
+                'maincluster'   => $stmt->maincluster,
+                'name'          => $stmt->subcluster,
+                'data-category' => $slug,
+                'slug'          => $slug,
+                'active'        => false,
+                'icon'          => 'files/templates/images/mdi_legal.png',
             ];
         }
 
+        // Optional default active
         if (!empty($categories)) {
             $categories[0]['active'] = true;
         }
 
         return $categories;
-
-        // return [
-        //     ['name' => 'Hospitality & Gastronomy', 'data-category' => 'hospitality', 'active' => true, 'icon' => 'files/templates/images/mdi_legal.png'],
-        //     ['name' => 'Amusement Parks & Camping', 'data-category' => 'amusement', 'active' => false, 'icon' => 'files/templates/images/mdi_legal.png'],
-        //     ['name' => 'Sports & Clubs', 'data-category' => 'sports', 'active' => false, 'icon' => 'files/templates/images/mdi_legal.png'],
-        //     ['name' => 'E-Commerce & Retail', 'data-category' => 'ecommerce', 'active' => false, 'icon' => 'files/templates/images/mdi_legal.png'],
-        //     ['name' => 'Cities & Tourism', 'data-category' => 'cities', 'active' => false, 'icon' => 'files/templates/images/mdi_legal.png']
-        // ];
     }
 
     /**
@@ -276,9 +337,16 @@ class ModuleFaqAdd extends \Contao\Module
 
         $params = [];
 
+        // Add cluster filter
         if ($this->selectedCluster) {
             $sql .= " AND maincluster = ?";
             $params[] = $this->selectedCluster;
+        }
+
+        // Add region/international filter
+        if ($this->selectedInternational) {
+            $sql .= " AND maincluster = ?";
+            $params[] = $this->selectedInternational;
         }
 
         $sql .= " ORDER BY subcluster, id ASC";
@@ -299,6 +367,7 @@ class ModuleFaqAdd extends \Contao\Module
             if (!$question || !$answer) continue;
 
             $sub = $objFaqs->subcluster ?: 'Other';
+            $mainCluster = $objFaqs->maincluster ?: '';
 
             if (!isset($grouped[$sub])) {
                 $grouped[$sub] = [];
@@ -307,7 +376,8 @@ class ModuleFaqAdd extends \Contao\Module
             $grouped[$sub][] = [
                 'question' => $question,
                 'answer' => nl2br($answer),
-                'subcluster' => $sub
+                'subcluster' => $sub,
+                'maincluster' => $mainCluster  // Added this
             ];
         }
 
@@ -331,7 +401,7 @@ class ModuleFaqAdd extends \Contao\Module
     {
         $subTemplate = new \Contao\FrontendTemplate($templateName);
 
-        if ($templateName === 'faq_sub_clusters_section') {
+        if ($templateName === 'faq_sub_clusters_section' || $templateName === 'faq_sub_clusters_region_section') {
             $subTemplate->faq = $this->getGroupedFaq();
             $subTemplate->subClustersTitle = $this->Template->subClustersTitle;
             $subTemplate->sidebarCategories = $this->Template->sidebarCategories;
@@ -347,11 +417,11 @@ class ModuleFaqAdd extends \Contao\Module
             $subTemplate->featuredItems = $this->Template->featuredItems;
             $subTemplate->popularTopics = $this->Template->popularTopics;
             $subTemplate->topicsTitle = $this->Template->topicsTitle;
-        }elseif ($templateName === 'faq_clusters_section') {
+        } elseif ($templateName === 'faq_clusters_section') {
             $subTemplate->clusters = $this->Template->clusters;
             $subTemplate->clustersTitle = $this->Template->clustersTitle;
             $subTemplate->selectedCluster = $this->Template->selectedCluster;
-        } elseif($templateName === 'faq_questions_only') {
+        } elseif ($templateName === 'faq_questions_only') {
             $subTemplate->selectedCluster = $this->Template->selectedCluster;
             $subTemplate->faq = $this->Template->faq;
         }

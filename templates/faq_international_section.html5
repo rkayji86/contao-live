@@ -13,7 +13,7 @@
                             <img src="files/templates/images/mdi_legal.png" alt="icon">
                         <?php endif; ?>
                     </div>
-                    <div class="region-name"><?= htmlspecialchars($region['name']) ?></div>
+                    <div class="region-name"><?= ucfirst(str_replace('-continent', '', htmlspecialchars($region['name']))) ?></div>
                 </a>
                 <?php endforeach; ?>
             <?php else: ?>

@@ -1,9 +1,14 @@
-<div class="main-container">``
+<div class="main-container">
+
     <?= $this->heroSection ?>
     <?= $this->clustersSection ?>
 
-    <?//php if ($this->hasClusterFilter): ?>
-        <?//= $this->questionsSection ?>
+    <?php if ($this->hasClusterFilter): ?>
+        <?= $this->questionsSection ?>
+    <?php else: ?>
         <?= $this->recentQuestionsSection ?>
         <?= $this->internationalSection ?>
+        <?//= $this->subClustersSection ?>
+    <?php endif; ?>
+
 </div>
