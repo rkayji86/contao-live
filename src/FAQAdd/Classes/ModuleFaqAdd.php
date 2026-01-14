@@ -5,6 +5,7 @@ namespace FAQAdd\Classes;
 use Contao\BackendTemplate;
 use Contao\Environment;
 use Contao\Input;
+use Contao\PageModel;
 
 class ModuleFaqAdd extends \Contao\Module
 {
@@ -135,7 +136,7 @@ class ModuleFaqAdd extends \Contao\Module
         $this->Template->sidebarCategories = $this->getSidebarCategories();
 
         // Render sub-templates
-        $this->Template->heroSection = $this->renderSubTemplate('faq_hero_section');
+        $this->Template->heroSection = $this->renderSubTemmplate('faq_hero_section');
         $this->Template->clustersSection = $this->renderSubTemplate('faq_clusters_section');
         $this->Template->recentQuestionsSection = $this->renderSubTemplate('faq_recent_questions');
         $this->Template->internationalSection = $this->renderSubTemplate('faq_international_section');
@@ -161,24 +162,50 @@ class ModuleFaqAdd extends \Contao\Module
     }
 
     /**
+     * Get the current language root page ID
+     */
+    private function getCurrentRootPageId()
+    {
+        global $objPage;
+        
+        // Get the root page ID from current page
+        $rootPage = \PageModel::findByPk($objPage->rootId);
+        
+        return $rootPage ? $rootPage->id : null;
+    }
+
+    /**
      * Get clusters data
      */
     private function getClusters(): array
     {
         $db = $this->db;
-        $page = \PageModel::findByPk($GLOBALS['objPage']->id);
 
-        // Find published clusters page
-        $clustersPage = \PageModel::findOneBy(
-            ['tl_page.alias=?', 'tl_page.published=?'],
-            ['clusters', '1']
-        );
+        $currentRootId = $this->getCurrentRootPageId();
 
-        // Fallback: try to find any page with 'clusters' in alias
+        // Find published clusters page in current language root
+        $clustersPage = null;
+        
+        if ($currentRootId) {
+            // Find page with matching alias under the current root
+            $result = $db->prepare("
+                SELECT * FROM tl_page 
+                WHERE alias = ? 
+                AND published = ? 
+                AND pid = ?
+                LIMIT 1
+            ")->execute('clusters', '1', $currentRootId);
+            
+            if ($result->numRows > 0) {
+                $clustersPage = \PageModel::findByPk($result->id);
+            }
+        }
+
+        // Fallback: find any published clusters page
         if (!$clustersPage) {
             $clustersPage = \PageModel::findOneBy(
-                ['tl_page.alias LIKE ?', 'tl_page.published=?'],
-                ['%clusters%', '1']
+                ['tl_page.alias=?', 'tl_page.published=?'],
+                ['clusters', '1']
             );
         }
 
@@ -197,9 +224,11 @@ class ModuleFaqAdd extends \Contao\Module
         $clusters = [];
 
         while ($objClusters->next()) {
+            $baseUrl = $clustersPage ? $clustersPage->getAbsoluteUrl() : '#';
+            
             $clusters[] = [
                 'title'       => $objClusters->maincluster,
-                'url'         => $clustersPage->getAbsoluteUrl() . '?cluster=' . urlencode($objClusters->maincluster),
+                'url'         => $baseUrl . '?cluster=' . urlencode($objClusters->maincluster),
                 'active'      => ($objClusters->maincluster === $activeCluster),
                 'description' => 'Legal frameworks and compliance requirements for voucher systems',
                 'icon'        => 'files/templates/images/mdi_legal.png',
@@ -224,21 +253,35 @@ class ModuleFaqAdd extends \Contao\Module
     {
         $db = $this->db;
 
-        // Find published clusters page
-        $clustersPage = \PageModel::findOneBy(
-            ['tl_page.alias=?', 'tl_page.published=?'],
-            ['international', '1']
-        );
+        $currentRootId = $this->getCurrentRootPageId();
 
-        // Fallback: try to find any page with 'clusters' in alias
-        if (!$clustersPage) {
-            $clustersPage = \PageModel::findOneBy(
-                ['tl_page.alias LIKE ?', 'tl_page.published=?'],
-                ['%international%', '1']
+        // Find published international page in current language root
+        $internationalPage = null;
+        
+        if ($currentRootId) {
+            // Find page with matching alias under the current root
+            $result = $db->prepare("
+                SELECT * FROM tl_page 
+                WHERE alias = ? 
+                AND published = ? 
+                AND pid = ?
+                LIMIT 1
+            ")->execute('international', '1', $currentRootId);
+            
+            if ($result->numRows > 0) {
+                $internationalPage = \PageModel::findByPk($result->id);
+            }
+        }
+
+        // Fallback: find any published international page
+        if (!$internationalPage) {
+            $internationalPage = \PageModel::findOneBy(
+                ['tl_page.alias=?', 'tl_page.published=?'],
+                ['international', '1']
             );
         }
 
-        $activeCluster = \Contao\Input::get('region');
+        $activeRegion = \Contao\Input::get('region');
 
         $objClusters = $db->execute("
         SELECT DISTINCT maincluster
@@ -250,19 +293,20 @@ class ModuleFaqAdd extends \Contao\Module
         ORDER BY maincluster
     ");
 
-        $clusters = [];
+        $regions = [];
 
         while ($objClusters->next()) {
-            $clusters[] = [
-                'name'  => $objClusters->maincluster,
-                'url'    => $clustersPage
-                    ? $clustersPage->getAbsoluteUrl() . '?region=' . urlencode($objClusters->maincluster)
-                    : '#',
-                'active' => ($objClusters->maincluster === $activeCluster),
+            $baseUrl = $internationalPage ? $internationalPage->getAbsoluteUrl() : '#';
+            
+            $regions[] = [
+                'name'   => $objClusters->maincluster,
+                'url'    => $baseUrl . '?region=' . urlencode($objClusters->maincluster),
+                'active' => ($objClusters->maincluster === $activeRegion),
+                'icon'   => 'files/templates/images/mdi_legal.png',
             ];
         }
 
-        return $clusters;
+        return $regions;
     }
 
     /**
@@ -377,7 +421,7 @@ class ModuleFaqAdd extends \Contao\Module
                 'question' => $question,
                 'answer' => nl2br($answer),
                 'subcluster' => $sub,
-                'maincluster' => $mainCluster  // Added this
+                'maincluster' => $mainCluster
             ];
         }
 

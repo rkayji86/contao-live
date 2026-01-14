@@ -11,4 +11,62 @@
     <?php if ($this->hasClusterFilter): ?>
         <?= $this->subClustersSection ?>
     <?php endif; ?>
+    <script>
+(function() {
+    'use strict';
+    
+    // Function to preserve query parameters on language switch
+    function preserveLanguageSwitchParams() {
+        // Find all language switcher links
+        const langSwitchers = document.querySelectorAll('.mod_changelanguage a, [class*="language"] a, [class*="lang"] a');
+        
+        if (!langSwitchers.length) {
+            return;
+        }
+        
+        // Get current URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const cluster = urlParams.get('cluster');
+        const region = urlParams.get('region');
+        
+        // If no parameters to preserve, exit
+        if (!cluster && !region) {
+            return;
+        }
+        
+        // Update each language switcher link
+        langSwitchers.forEach(function(link) {
+            try {
+                const url = new URL(link.href, window.location.origin);
+                
+                // Add cluster parameter if it exists
+                if (cluster) {
+                    url.searchParams.set('cluster', cluster);
+                }
+                
+                // Add region parameter if it exists
+                if (region) {
+                    url.searchParams.set('region', region);
+                }
+                
+                // Update the link href
+                link.href = url.toString();
+            } catch (e) {
+                console.warn('Could not update language link:', link.href, e);
+            }
+        });
+    }
+    
+    // Run on page load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', preserveLanguageSwitchParams);
+    } else {
+        preserveLanguageSwitchParams();
+    }
+    
+    // Also run after a short delay to catch dynamically loaded elements
+    setTimeout(preserveLanguageSwitchParams, 500);
+})();
+</script>
+
 </div>
