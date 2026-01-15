@@ -3,7 +3,7 @@
     <?//= $this->subClustersSection ?>
 </div> -->
 
-<div class="main-container">``
+<div class="main-container">
     <?= $this->heroSection ?>
     <?php if ($this->hasInternationalFilter): ?>
         <?= $this->subClustersRegionSection ?>

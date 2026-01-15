@@ -1,23 +1,29 @@
 <!-- Hero/Search Section -->
+<style>
+#faq-search:focus{
+    border: none;
+    box-shadow: none;
+}
+</style>
 <div class="hero-section mb-5">
     <div class="search-container">
         <h1 class="search-title"><?= $this->heroTitle ?: 'How can we help?' ?></h1>
 
         <div class="search-box mb-3">
             <i class="fas fa-search search-icon"></i>
-            <input type="text" id="faq-search" placeholder="<?= $this->searchPlaceholder ?: 'Search for answers...' ?>" class="form-control">
+            <input type="text" id="faq-search" value="<?= \Contao\StringUtil::specialchars($this->searchQuery ?? '') ?>" placeholder="<?= $this->searchPlaceholder ?: 'Search for answers...' ?>" class="form-control">
         </div>
         
        <div class="faq-items" id="faq-search-results" style="display:none;"></div>
 
-        <?php if ($this->popularTopics): ?>
+        <!-- <?php if ($this->popularTopics): ?>
         <div class="popular-topics mb-5">
             <span class="topics-title"><?= $this->topicsTitle ?: 'Popular Topics:' ?></span>
             <?php foreach ($this->popularTopics as $topic): ?>
             <button class="topic-btn"><?= $topic ?></button>
             <?php endforeach; ?>
         </div>
-        <?php endif; ?>
+        <?php endif; ?> -->
     </div>
 </div>
 
@@ -28,12 +34,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const resultsBox = document.getElementById('faq-search-results');
 
     let controller = null;
+    const lang = "<?= $GLOBALS['TL_LANGUAGE'] ?? 'de' ?>";
 
     function showResults(items) {
         resultsBox.innerHTML = '';
 
         if (!items.length) {
-            resultsBox.innerHTML = '<div class="no-results">No results found…</div>';
+            const noResultsText = (lang === 'de') ? 'Keine Ergebnisse gefunden…' : 'No results found…';
+            resultsBox.innerHTML = `<div class="no-results">${noResultsText}</div>`;
         } else {
             items.forEach(item => {
                 const el = document.createElement('div');
@@ -79,6 +87,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
         });
+    });
+
+    input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+
+            const q = this.value.trim();
+            if (!q) return;
+
+            const url = new URL(window.location.href);
+            const pathParts = url.pathname.split('/').filter(Boolean);
+
+            if (pathParts.length && pathParts[0].length === 2) {
+                url.pathname = '/' + pathParts[0] + '/faq.html';
+            } else {
+                url.pathname = '/faq.html';
+            }
+
+            window.location.href = "<?= rtrim(\Contao\Environment::get('base'), '/') ?>"+ url.pathname + "?q="+ q;
+        }
     });
 });
 </script>

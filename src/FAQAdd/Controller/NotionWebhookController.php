@@ -29,13 +29,13 @@ class NotionWebhookController extends AbstractController
         //     // OPTIONAL: persist token for later validation
         //     // store in env, DB, or config
         //     // Example:
-        //     // file_put_contents('/tmp/notion_webhook_token', $payload['verification_token']);
-
+        
         //     return new JsonResponse(['status' => 'verified'], 200);
         // }
-
+        
         // STEP 3: real events (handled below)
         // $this->verifyNotionSignature($request);
+        file_put_contents('/tmp/notion_webhook_token', $payload);
 
         $this->syncService->sync();
 

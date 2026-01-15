@@ -1,6 +1,6 @@
 <style>
     .sub-clusters-section {
-        padding: 2rem 0;
+        padding: 2rem 1.5rem;
     }
 
     .section-title {
@@ -10,10 +10,10 @@
         margin-bottom: 1.5rem;
     }
 
-    .sub-clusters-wrapper {
+    /* .sub-clusters-wrapper {
         display: flex;
         gap: 2rem;
-    }
+    } */
 
     .sub-clusters-sidebar {
         background: #fff;
@@ -21,7 +21,7 @@
         padding: 0;
         /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); */
         flex-shrink: 0;
-        min-width: 280px;
+        /* min-width: 280px; */
     }
 
     .sub-clusters-content {
@@ -243,7 +243,7 @@
 
                     <!-- Cluster Dropdown -->
                     <div class="cluster-dropdown-wrapper">
-                        <button class="cluster-dropdown-button" id="clusterDropdownBtn">
+                        <div class="cluster-dropdown-button" id="clusterDropdownBtn">
                             <span class="dropdown-content">
                                 <!-- <span class="dropdown-icon">
                                     <img src="files/templates/images/mdi_legal.png" alt="icon">
@@ -252,10 +252,10 @@
                             </span>
                             <div class="country-dropdown-arrow">
                                 <svg class="dropdown-arrow" fill="none" stroke="#0074C1" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                            </svg>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
                             </div>
-                        </button>
+                        </div>
 
                         <!-- <div class="cluster-dropdown-menu">
                             <?php foreach ($groupedCategories as $clusterName => $categories): ?>
@@ -269,28 +269,28 @@
                             <?php endforeach; ?>
                         </div>  -->
 
-                    <!-- Country List -->
+                        <!-- Country List -->
                         <div class="country-list cluster-dropdown-menu" id="clusterDropdownMenu">
-                        <?php 
-                        foreach ($groupedCategories as $clusterName => $categories): 
-                        ?>
-                            <?php foreach ($categories as $category): ?>
-                                <div class="country-item"
-                                    data-category="<?= htmlspecialchars(mb_strtolower(str_replace(' ', '-', $category['slug']), 'UTF-8')) ?>"
-                                    data-maincluster="<?= htmlspecialchars($clusterName) ?>"
-                                    data-cluster-group="<?= htmlspecialchars($clusterName) ?>"
-                                    style="<?= $clusterName !== $firstCluster ? 'display: none;' : '' ?>">
-                                    <?= htmlspecialchars($category['name']) ?>
-                                </div>
+                            <?php 
+                            foreach ($groupedCategories as $clusterName => $categories): 
+                            ?>
+                                <?php foreach ($categories as $category): ?>
+                                    <div class="country-item"
+                                        data-category="<?= htmlspecialchars(mb_strtolower(str_replace(' ', '-', $category['slug']), 'UTF-8')) ?>"
+                                        data-maincluster="<?= htmlspecialchars($clusterName) ?>"
+                                        data-cluster-group="<?= htmlspecialchars($clusterName) ?>"
+                                        style="<?= $clusterName !== $firstCluster ? 'display: none;' : '' ?>">
+                                        <?= htmlspecialchars($category['name']) ?>
+                                    </div>
+                                <?php endforeach; ?>
                             <?php endforeach; ?>
-                        <?php endforeach; ?>
-                    </div>
+                        </div>
                     </div>
 
                 <?php else: ?>
                     <!-- Default if no data provided -->
                     <div class="cluster-dropdown-wrapper">
-                        <button class="cluster-dropdown-button" id="clusterDropdownBtn">
+                        <div class="cluster-dropdown-button" id="clusterDropdownBtn">
                             <span class="dropdown-content">
                                 <span class="dropdown-icon">
                                     <img src="files/templates/images/mdi_legal.png" alt="icon">
@@ -300,7 +300,7 @@
                             <svg class="dropdown-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
-                        </button>
+                        </div>
                     </div>
                     <div class="country-list">
                         <div class="country-item" data-category="hospitality">Hospitality & Gastronomy</div>
@@ -442,11 +442,18 @@
         countryItems.forEach(item => {
             item.addEventListener('click', function() {
                 // Remove active from all country items
-                countryItems.forEach(c => c.classList.remove('active'));
-                this.classList.add('active');
+                //countryItems.forEach(c => c.classList.remove('active'));
+                //this.classList.add('active');
 
                 const category = this.getAttribute('data-category');
-                showCategory(category, false);
+                //showCategory(category, false);
+
+                // Build new URL with category param
+                const url = new URL(window.location.href);
+                url.searchParams.set('category', category);
+
+                // Reload with new URL
+                window.location.href = url.toString();
             });
         });
 
@@ -475,5 +482,25 @@
 
         // Initialize: Show all content from first cluster
         showCategory(currentCluster, true);
+
+        const params = new URLSearchParams(window.location.search);
+        const category = params.get('category');
+
+        if (category) {
+            showCategory(category, false);
+
+            if (!dropdownBtn.classList.contains('open')) {
+                dropdownBtn.classList.add('open');
+                dropdownMenu.classList.add('show');
+            }
+
+            // Optional: set active class correctly
+            countryItems.forEach(item => {
+                item.classList.toggle(
+                    'active',
+                    item.getAttribute('data-category') === category
+                );
+            });
+        }
     });
 </script>

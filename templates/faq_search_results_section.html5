@@ -1,0 +1,109 @@
+<!-- FAQ Search Results Section -->
+
+<?php
+$search = trim($this->searchQuery ?? '');
+
+function highlightTerm(string $text, string $search): string
+{
+    if ($search === '') {
+        return $text;
+    }
+
+    return preg_replace(
+        '/' . preg_quote($search, '/') . '/i',
+        '<mark class="qs">$0</mark>',
+        $text
+    );
+}
+?>
+
+<style>
+
+.faq-search-results-section .accordion-body {
+    border: 0;
+    padding-top: 0;
+}
+.faq-search-header {
+    margin-bottom: 2rem;
+}
+.faq-search-header p {
+    color: #666;
+}
+.all-results{
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
+}
+.faq-no-search-result{
+    border: 0;
+    margin-bottom: 0;
+}
+</style>
+
+<div class="faq-search-results-section mt-5 pt-3">
+    <div class="sub-clusters-container">
+        <div class="faq-search-header">
+            <h3 class="section-title">
+                <?= $this->searchResultFoundTitle ?: 'Search results for' ?>
+                “<?= \Contao\StringUtil::specialchars($this->searchQuery) ?>”
+            </h3>
+
+            <p>
+                <?= $this->searchResultsCount ?>
+                <?= $this->searchResultCountText ?>
+            </p>
+        </div>
+
+        <div class="all-results">
+            <?php if ($this->searchResultsCount): ?>
+
+                <?php $i = 1; ?>
+                <?php foreach ($this->searchResults as $item): ?>
+
+                    <div class="accordion" id="accordion-search-<?= $i ?>">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button
+                                    class="accordion-button collapsed"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#collapseSearch<?= $i ?>"
+                                    aria-expanded="false"
+                                    aria-controls="collapseSearch<?= $i ?>"
+                                >
+                                    <div>
+                                        <?= highlightTerm(htmlspecialchars($item['question']), \Contao\StringUtil::specialchars($search)) ?>
+                                    </div>
+                                </button>
+                            </h2>
+
+                            <div
+                                id="collapseSearch<?= $i ?>"
+                                class="accordion-collapse collapse"
+                                data-bs-parent="#accordion-search-<?= $i ?>"
+                            >
+                                <div class="accordion-body">
+                                    <?= highlightTerm($item['answer'], $search) ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <?php $i++; ?>
+                <?php endforeach; ?>
+
+            <?php else: ?>
+
+                <div class="alert alert-light faq-no-search-result">
+                    <strong><?= $this->noSearchResultsTitle ?: 'No results found.' ?></strong><br>
+                    <?= $this->noSearchResultsDetail ?: 'Try different keywords or browse categories.' ?>
+                </div>
+
+            <?php endif; ?>
+        </div>
+    </div>
+</div>

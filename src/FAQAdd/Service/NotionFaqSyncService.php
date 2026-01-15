@@ -51,10 +51,14 @@ class NotionFaqSyncService
             throw new \RuntimeException('No data sources found in database');
         }
 
-        $dataSourceId = $database['data_sources'][1]['id'];
+        $dataSourceId = $database['data_sources'][0]['id'];
         
         // 3. Query FAQ pages
         $pages = $client->queryDataSource($dataSourceId);
+        // echo '<pre>';
+        // print_r($pages);
+        // echo '</pre>';
+        // die();
 
         $allowedStatuses = $this->deserialize($settings['allowed_statuses']);
 
@@ -106,7 +110,9 @@ class NotionFaqSyncService
         $data = [
             'notion_id'     => $notionId,
             'maincluster'   => $props['maincluster']->option->name ?? $props['maincluster']['select']['name'] ?? $props['maincluster']['rich_text'][0]['plain_text'] ?? null,
+            'maincluster_en'   => $props['maincluster_en']->option->name ?? $props['maincluster_en']['select']['name'] ?? $props['maincluster_en']['rich_text'][0]['plain_text'] ?? null,
             'subcluster'    => $props['subcluster']->option->name ?? $props['subcluster']['select']['name'] ?? $props['subcluster']['rich_text'][0]['plain_text'] ?? null,
+            'subcluster_en'    => $props['subcluster_en']->option->name ?? $props['subcluster_en']['select']['name'] ?? $props['subcluster_en']['rich_text'][0]['plain_text'] ?? null,
             'de_question'   => $props['de_question']->text[0]->plainText ?? $props['de_question']['rich_text'][0]['plain_text'] ?? null,
             'de_answer'     => $props['de_answer']->text[0]->plainText ?? $props['de_answer']['rich_text'][0]['plain_text'] ?? null,
             'en_question'   => $props['en_question']->text[0]->plainText ?? $props['en_question']['rich_text'][0]['plain_text'] ?? null,
@@ -125,7 +131,9 @@ class NotionFaqSyncService
                 ->prepare("
                     UPDATE tl_notion_faq SET
                         maincluster=?,
+                        maincluster_en=?,
                         subcluster=?,
+                        subcluster_en=?,
                         de_question=?,
                         de_answer=?,
                         en_question=?,
@@ -137,7 +145,9 @@ class NotionFaqSyncService
                 ")
                 ->execute(
                     $data['maincluster'],
+                    $data['maincluster_en'],
                     $data['subcluster'],
+                    $data['subcluster_en'],
                     $data['de_question'],
                     $data['de_answer'],
                     $data['en_question'],
@@ -154,13 +164,15 @@ class NotionFaqSyncService
         $this->db
             ->prepare("
                 INSERT INTO tl_notion_faq
-                (notion_id, maincluster, subcluster, de_question, de_answer, en_question, en_answer, internal_link, reference, status)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (notion_id, maincluster, maincluster_en, subcluster, subcluster_en, de_question, de_answer, en_question, en_answer, internal_link, reference, status)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ")
             ->execute(
                 $data['notion_id'],
                 $data['maincluster'],
+                $data['maincluster_en'],
                 $data['subcluster'],
+                $data['subcluster_en'],
                 $data['de_question'],
                 $data['de_answer'],
                 $data['en_question'],

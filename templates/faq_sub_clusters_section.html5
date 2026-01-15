@@ -1,4 +1,13 @@
 <!-- Sub Clusters Section -->
+<style>
+.sub-clusters-content .accordion-body{
+    border: 0px;
+    padding-top: 0px;
+}
+.sub-clusters-content{
+    height: fit-content;
+}
+</style>
 <div class="sub-clusters-section mt-5 pt-3">
     <div class="sub-clusters-container">
         <h3 class="section-title"><?= $this->subClustersTitle ?: 'Sub Clusters' ?></h3>
@@ -8,7 +17,7 @@
             <div class="sub-clusters-sidebar">
                 <?php if ($this->sidebarCategories): ?>
                     <?php foreach ($this->sidebarCategories as $category): ?>
-                    <div class="sidebar-item<?= $category['active'] ? ' active' : '' ?>" data-category="<?= htmlspecialchars($category['data-category']) ?>">
+                    <div class="sidebar-item<?= $category['active'] ? ' active' : '' ?>" data-category="<?= mb_strtolower(str_replace(' ', '-', $category['name'])) ?>">
                         <span class="sidebar-icon">
                             <?php if ($category['icon']): ?>
                                 <img src="<?= $category['icon'] ?>" alt="<?= htmlspecialchars($category['name']) ?>">
@@ -80,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function showCategory(category) {
         accordions.forEach(acc => {
+        console.log('from accirdin: ', acc.getAttribute('data-category'), 'From db slug: ', category);
             if (acc.getAttribute('data-category') === category) {
                 acc.style.display = 'block';
             } else {

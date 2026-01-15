@@ -1,14 +1,18 @@
 <div class="main-container">
 
     <?= $this->heroSection ?>
-    <?= $this->clustersSection ?>
 
-    <?php if ($this->hasClusterFilter): ?>
-        <?= $this->questionsSection ?>
+    <?php if ($this->hasSearch): ?>
+        <?= $this->searchResultsSection ?>
     <?php else: ?>
-        <?= $this->recentQuestionsSection ?>
-        <?= $this->internationalSection ?>
-        <?//= $this->subClustersSection ?>
+        <?= $this->clustersSection ?>
+
+        <?php if ($this->hasClusterFilter): ?>
+            <?= $this->questionsSection ?>
+        <?php else: ?>
+            <?= $this->recentQuestionsSection ?>
+            <?= $this->internationalSection ?>
+        <?php endif; ?>
     <?php endif; ?>
 
 </div>

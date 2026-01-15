@@ -54,6 +54,10 @@ class ModuleFaqAdd extends \Contao\Module
         $this->Template->selectedInternational = $selectedInternational;
         $this->selectedInternational = $selectedInternational;
 
+        $searchQuery = Input::get('q');
+        $this->Template->hasSearch = (bool) $searchQuery;
+        $this->Template->searchQuery = $searchQuery;
+
         $db = $this->db;
 
         // Fetch all FAQ records (adjust status filter if needed)
@@ -95,6 +99,14 @@ class ModuleFaqAdd extends \Contao\Module
                 continue;
             }
 
+            // 🔍 SEARCH FILTER
+            if ($searchQuery) {
+                $haystack = strtolower($question . ' ' . strip_tags($answer));
+                if (stripos($haystack, $searchQuery) === false) {
+                    continue;
+                }
+            }
+
             $notionFaq[] = [
                 'question' => $question,
                 'answer'   => nl2br($answer),
@@ -102,6 +114,9 @@ class ModuleFaqAdd extends \Contao\Module
                 'lang'     => $lang
             ];
         }
+
+        $this->Template->searchResults = $notionFaq;
+        $this->Template->searchResultsCount = count($notionFaq);
 
         // Main FAQ data
         $this->Template->faq = [
@@ -113,36 +128,53 @@ class ModuleFaqAdd extends \Contao\Module
         ];
 
         // Hero Section
-        $this->Template->heroTitle = $this->heroTitle ?: 'How can we help?';
-        $this->Template->searchPlaceholder = $this->searchPlaceholder ?: 'Search for answers...';
+        $this->Template->heroTitle = $this->heroTitle ? $this->heroTitle : ($lang == 'de' ? 'Wie können wir helfen?' : 'How can we help?');
+        $this->Template->searchPlaceholder = $this->searchPlaceholder ?: ($lang == 'de' ? 'Suche nach Antworten...' : 'Search for answers...');
         $this->Template->featuredItems = $this->getFeaturedItems($notionFaq);
         $this->Template->popularTopics = $this->getPopularTopics();
-        $this->Template->topicsTitle = $this->topicsTitle ?: 'Popular Topics:';
+        $this->Template->topicsTitle = $this->topicsTitle ?: ($lang == 'de' ? 'Beliebte Themen:' : 'Popular Topics:');
 
         // Clusters
-        $this->Template->clustersTitle = $this->clustersTitle ?: 'Clusters';
+        $this->Template->clustersTitle = $this->clustersTitle ?: ($lang == 'de' ? 'Cluster' : 'Clusters');
         $this->Template->clusters = $this->getClusters();
 
         // Recent Questions
-        $this->Template->recentQuestionsTitle = $this->recentQuestionsTitle ?: 'Recently Asked Questions';
+        $this->Template->recentQuestionsTitle = $this->recentQuestionsTitle ?: ($lang == 'de' ? 'Kürzlich gestellte Fragen' : 'Recently Asked Questions');
         $this->Template->recentQuestions = $this->getRecentQuestions($notionFaq);
 
         // International
-        $this->Template->internationalTitle = $this->internationalTitle ?: 'International';
+        $this->Template->internationalTitle = $this->internationalTitle ?: ($lang == 'de' ? 'International' : 'International');
         $this->Template->regions = $this->getRegions();
 
+        $this->Template->noSearchResultsTitle = $this->noSearchResultsTitle ?: ($lang == 'de' ? 'Keine Ergebnisse gefunden.' : 'No results found.');
+        $this->Template->noSearchResultsDetail = $this->noSearchResultsDetail ?: ($lang == 'de' ? 'Probieren Sie verschiedene Schlüsselwörter oder durchstöbern Sie Kategorien.' : 'Try different keywords or browse categories.');
+
+        $this->Template->searchResultFoundTitle = $this->searchResultFoundTitle ?: ($lang == 'de' ? 'Suchergebnisse für' : 'Search results for');
+
+        $this->Template->searchResultCountText = ($lang === 'de')
+            ? ($this->Template->searchResultsCount === 1 ? 'Ergebnis gefunden' : 'Ergebnisse gefunden')
+            : ($this->Template->searchResultsCount === 1 ? 'result found' : 'results found');
+
         // Sub Clusters
-        $this->Template->subClustersTitle =  $selectedInternational ? 'Countries' : ($this->subClustersTitle ? $this->subClustersTitle : 'Sub Clusters');
+        $this->Template->subClustersTitle = $selectedInternational
+                            ? ($lang == 'de' ? 'Länder' : 'Countries')
+                            : ($this->subClustersTitle
+                                ? $this->subClustersTitle
+                                : ($lang == 'de' ? 'Untercluster' : 'Sub Clusters'));
+                                
         $this->Template->sidebarCategories = $this->getSidebarCategories();
 
+        // echo "<pre>";print_r($this->Template->sidebarCategories);die;
+
         // Render sub-templates
-        $this->Template->heroSection = $this->renderSubTemmplate('faq_hero_section');
+        $this->Template->heroSection = $this->renderSubTemplate('faq_hero_section');
         $this->Template->clustersSection = $this->renderSubTemplate('faq_clusters_section');
         $this->Template->recentQuestionsSection = $this->renderSubTemplate('faq_recent_questions');
         $this->Template->internationalSection = $this->renderSubTemplate('faq_international_section');
         $this->Template->subClustersSection = $this->renderSubTemplate('faq_sub_clusters_section');
         $this->Template->subClustersRegionSection = $this->renderSubTemplate('faq_sub_clusters_region_section');
         $this->Template->questionsSection  = $this->renderSubTemplate('faq_questions_only');
+        $this->Template->searchResultsSection  = $this->renderSubTemplate('faq_search_results_section');
     }
 
     /**
@@ -461,6 +493,7 @@ class ModuleFaqAdd extends \Contao\Module
             $subTemplate->featuredItems = $this->Template->featuredItems;
             $subTemplate->popularTopics = $this->Template->popularTopics;
             $subTemplate->topicsTitle = $this->Template->topicsTitle;
+            $subTemplate->searchQuery = $this->Template->searchQuery;
         } elseif ($templateName === 'faq_clusters_section') {
             $subTemplate->clusters = $this->Template->clusters;
             $subTemplate->clustersTitle = $this->Template->clustersTitle;
@@ -468,6 +501,15 @@ class ModuleFaqAdd extends \Contao\Module
         } elseif ($templateName === 'faq_questions_only') {
             $subTemplate->selectedCluster = $this->Template->selectedCluster;
             $subTemplate->faq = $this->Template->faq;
+        } elseif ($templateName === 'faq_search_results_section') {
+            $subTemplate->hasSearch = $this->Template->hasSearch;
+            $subTemplate->searchQuery = $this->Template->searchQuery;
+            $subTemplate->searchResults = $this->Template->searchResults;
+            $subTemplate->searchResultsCount = $this->Template->searchResultsCount;
+            $subTemplate->noSearchResultsTitle = $this->Template->noSearchResultsTitle;
+            $subTemplate->noSearchResultsDetail = $this->Template->noSearchResultsDetail;
+            $subTemplate->searchResultFoundTitle = $this->Template->searchResultFoundTitle;
+            $subTemplate->searchResultCountText = $this->Template->searchResultCountText;
         }
 
         return $subTemplate->parse();
